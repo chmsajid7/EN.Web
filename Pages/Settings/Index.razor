@@ -1,0 +1,1883 @@
+﻿@page "/settings/index"
+@using System.Net.Http
+@attribute [Authorize]
+@inject IAlertService AlertService
+@inject NavigationManager NavigationManager
+
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Settings</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">Settings for Drop Downs</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+		<div class="container-fluid">
+			<div class="row">
+            <div class="card card-primary card-outline card-tabs" style="width:50%">
+              <div class="card-header p-0 pt-1 border-bottom-0">
+                <ul class="nav nav-tabs" id="custom-tabs-three-tab" role="tablist">
+
+                  <li class="nav-item">
+                    <a class="nav-link active" id="custom-tabs-three-home-tab" data-toggle="pill" href="#custom-tabs-three-home" role="tab" aria-controls="custom-tabs-three-home" aria-selected="true">Surnames</a>
+                  </li>
+
+                  <li class="nav-item" @onclick="OnInitializedAsync_UC">
+                    <a class="nav-link" id="custom-tabs-three-profile-tab" data-toggle="pill" href="#custom-tabs-three-profile" role="tab" aria-controls="custom-tabs-three-profile" aria-selected="false">Union Council</a>
+                  </li>
+
+                  <li class="nav-item" @onclick="OnInitializedAsync_Village">
+                    <a class="nav-link" id="custom-tabs-three-village-tab" data-toggle="pill" href="#custom-tabs-three-village" role="tab" aria-controls="custom-tabs-three-village" aria-selected="false">Villages</a>
+                  </li>
+
+                  <li class="nav-item" @onclick="OnInitializedAsync_City">
+                    <a class="nav-link" id="custom-tabs-three-city-tab" data-toggle="pill" href="#custom-tabs-three-city" role="tab" aria-controls="custom-tabs-three-city" aria-selected="false">Cities</a>
+                  </li>
+
+                  <li class="nav-item" @onclick="OnInitializedAsync_Taluka">
+                    <a class="nav-link" id="custom-tabs-three-taluka-tab" data-toggle="pill" href="#custom-tabs-three-taluka" role="tab" aria-controls="custom-tabs-three-taluka" aria-selected="false">Taluka</a>
+                  </li>
+
+                </ul>
+              </div>
+              <div class="card-body">
+                <div class="tab-content" id="custom-tabs-three-tabContent">
+
+                  <div class="tab-pane fade show active" id="custom-tabs-three-home" role="tabpanel" aria-labelledby="custom-tabs-three-home-tab">
+                      <div class="card-body table-responsive p-0">
+
+                          <table class="table text-nowrap">
+                              <thead>
+                                  <tr>
+                                      <th>All Surnames</th>
+                                      <th></th>
+                                      <th></th>
+                                      <th>
+                                          <NavLink style="float:right;" href="#" data-toggle="modal" data-target="#modal-default">
+                                              <h3 class="card-title"><i class="fas fa-plus"></i>&nbsp;&nbsp;Add new Surname! </h3>
+                                          </NavLink>
+                                      </th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  @if (loading)
+                                  {
+                                      <tr>
+                                          <td colspan="12" class="text-center">
+                                              <span class="spinner-border spinner-border-lg align-center"></span>
+                                          </td>
+                                      </tr>
+                                  }
+                                  else
+                                  {
+                                      @foreach (var surname in surnames)
+                                      {
+                                          <tr>
+                                              <td>@surname.SurnameName</td>
+                                              <td></td>
+                                              <td></td>
+                                              <td>
+                                                  @*edit button*@
+                                                  <NavLink style="float:right;" href="#" data-toggle="modal" data-target="#modal-default-edit" @onclick="@(() => CurrentSurname(surname.Id, surname.SurnameName))">
+                                                      <i class="far fa-edit" style="color:blue;"></i>
+                                                  </NavLink>
+                                              </td>
+                                          </tr>
+                                      }
+                                  }
+                              </tbody>
+                          </table>
+                          @if (totalPages > 0)
+                          {
+                              
+                              <br />
+                              <a style="color:grey;">Total @totalSurnames Surnames Found.</a>
+                              <ul class="pagination pagination-sm m-0 float-right">
+                                  @if (_page == 1)
+                                  {
+                                      <li class="page-item disabled"><a class="page-link" @onclick="GetSurnamesDataOnPreviousPage">&laquo;</a></li>
+                                  }
+                                  @if (_page != 1)
+                                  {
+                                      <li class="page-item"><a class="page-link" @onclick="GetSurnamesDataOnPreviousPage" href="" @onclick:preventDefault>&laquo;</a></li>
+                                      <li class="page-item"><a class="page-link" @onclick="GetSurnamesDataOnPreviousPage" href="" @onclick:preventDefault>...</a></li>
+                                  }
+                                  @if (totalPages > 0)
+                                  {
+                                        @for (int i = _page - 1; i < _page + 2 ; i++)
+                                        {
+                                            int buttonNumber = i;
+                                            @if (buttonNumber < 1 || buttonNumber > totalPages)
+                                            {
+                                            }
+                                            else
+                                            {
+                                                @if (buttonNumber == _page)
+                                                {
+                                                        <li class="page-item active"><a class="page-link" @onclick="@(() => GetSurnamesDataByPageNumber(buttonNumber))" href="" @onclick:preventDefault>@i</a></li>
+                                                }
+                                                else
+                                                {
+                                                        <li class="page-item"><a class="page-link" @onclick="@(() => GetSurnamesDataByPageNumber(buttonNumber))" href="" @onclick:preventDefault>@i</a></li>
+                                                }
+                                            }
+                                        }
+                                  }
+                                  @if (_page == totalPages)
+                                  {
+                                      <li class="page-item disabled"><a class="page-link" @onclick="GetSurnamesDataOnNextPage">&raquo;</a></li>
+                                  }
+                                  @if (_page != totalPages)
+                                  {
+                                      <li class="page-item"><a class="page-link" @onclick="GetSurnamesDataOnNextPage" href="" @onclick:preventDefault>...</a></li>
+                                      <li class="page-item"><a class="page-link" @onclick="GetSurnamesDataOnNextPage" href="" @onclick:preventDefault>&raquo;</a></li>
+                                  }
+                              </ul>
+                          }
+                      </div>
+                  </div>
+
+                  <div class="tab-pane fade" id="custom-tabs-three-profile" role="tabpanel" aria-labelledby="custom-tabs-three-profile-tab">
+                      <div class="card-body table-responsive p-0">
+                          <table class="table text-nowrap">
+                              <thead>
+                                  <tr>
+                                      <th>All Union Councils</th>
+                                      <th></th>
+                                      <th></th>
+                                      <th>
+                                          <NavLink style="float:right;" href="#" data-toggle="modal" data-target="#modal-default-uc">
+                                              <h3 class="card-title"><i class="fas fa-plus"></i>&nbsp;&nbsp;Add new Union Council! </h3>
+                                          </NavLink>
+                                      </th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  @if (loading)
+                                  {
+                                      <tr>
+                                          <td colspan="12" class="text-center">
+                                              <span class="spinner-border spinner-border-lg align-center"></span>
+                                          </td>
+                                      </tr>
+                                  }
+                                  else
+                                  {
+                                      if (UCs!=null)
+                                      {
+                                          @foreach (var uc in UCs)
+                                          {
+                                              <tr>
+                                                  <td>@uc.UnionCounsilName</td>
+                                                  <td></td>
+                                                  <td></td>
+                                                  <td>
+                                                      <NavLink style="float:right;" href="#" data-toggle="modal" data-target="#modal-default-edit-uc" @onclick="@(() => CurrentUC(uc.Id, uc.UnionCounsilName))">
+                                                          <i class="far fa-edit" style="color:blue;"></i>
+                                                      </NavLink>
+                                                  </td>
+                                              </tr>
+                                          }
+                                      }
+                                  }
+                              </tbody>
+                          </table>
+                          @if (totalUCPages > 0)
+                          {
+                              <br />
+                              <a style="color:grey;">Total @totalUCs UCs Found.</a>
+                              <ul class="pagination pagination-sm m-0 float-right">
+                                  @if (_UCpage == 1)
+                                  {
+                                      <li class="page-item disabled"><a class="page-link" @onclick="GetUCDataOnPreviousPage">&laquo;</a></li>
+                                  }
+                                  @if (_UCpage != 1)
+                                  {
+                                      <li class="page-item"><a class="page-link" @onclick="GetUCDataOnPreviousPage" href="" @onclick:preventDefault>&laquo;</a></li>
+                                      <li class="page-item"><a class="page-link" @onclick="GetUCDataOnPreviousPage" href="" @onclick:preventDefault>...</a></li>
+                                  }
+                                  @if (totalUCPages > 0)
+                                  {
+                                        @for (int i = _UCpage - 1; i < _UCpage + 2 ; i++)
+                                        {
+                                            int buttonNumber = i;
+                                            @if (buttonNumber < 1 || buttonNumber > totalUCPages)
+                                            {
+                                            }
+                                            else
+                                            {
+                                                @if (buttonNumber == _UCpage)
+                                                {
+                                                        <li class="page-item active"><a class="page-link" @onclick="@(() => GetUCDataByPageNumber(buttonNumber))" href="" @onclick:preventDefault>@i</a></li>
+                                                }
+                                                else
+                                                {
+                                                        <li class="page-item"><a class="page-link" @onclick="@(() => GetUCDataByPageNumber(buttonNumber))" href="" @onclick:preventDefault>@i</a></li>
+                                                }
+                                            }
+                                        }
+                                  }
+                                  @if (_UCpage == totalUCPages)
+                                  {
+                                      <li class="page-item disabled"><a class="page-link" @onclick="GetUCDataOnNextPage">&raquo;</a></li>
+                                  }
+                                  @if (_UCpage != totalUCPages)
+                                  {
+                                      <li class="page-item"><a class="page-link" @onclick="GetUCDataOnNextPage" href="" @onclick:preventDefault>...</a></li>
+                                      <li class="page-item"><a class="page-link" @onclick="GetUCDataOnNextPage" href="" @onclick:preventDefault>&raquo;</a></li>
+                                  }
+                              </ul>
+                          }
+                      </div>
+                  </div>
+
+                  <div class="tab-pane fade" id="custom-tabs-three-village" role="tabpanel" aria-labelledby="custom-tabs-three-village-tab">
+                      <div class="card-body table-responsive p-0">
+                          <table class="table text-nowrap">
+                              <thead>
+                                  <tr>
+                                      <th>All Villages</th>
+                                      <th></th>
+                                      <th></th>
+                                      <th>
+                                          <NavLink style="float:right;" href="#" data-toggle="modal" data-target="#modal-default-village">
+                                              <h3 class="card-title"><i class="fas fa-plus"></i>&nbsp;&nbsp;Add new Village! </h3>
+                                          </NavLink>
+                                      </th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  @if (loading)
+                                  {
+                                      <tr>
+                                          <td colspan="12" class="text-center">
+                                              <span class="spinner-border spinner-border-lg align-center"></span>
+                                          </td>
+                                      </tr>
+                                  }
+                                  @if (!loading)
+                                  {
+                                      if (villages != null)
+                                      {
+                                          @foreach (var villages in villages)
+                                          {
+                                              <tr>
+                                                  <td>@villages.VillageName</td>
+                                                  <td></td>
+                                                  <td></td>
+                                                  <td>
+                                                      <NavLink style="float:right;" href="#" data-toggle="modal" data-target="#modal-default-edit-village" @onclick="@(() => CurrentVillage(villages.Id, villages.VillageName))">
+                                                          <i class="far fa-edit" style="color:blue;"></i>
+                                                      </NavLink>
+                                                  </td>
+                                              </tr>
+                                          }
+                                      }
+                                  }
+                              </tbody>
+                          </table>
+                          @if (totalVillagePages > 0)
+                          {
+                              <br />
+                              <a style="color:grey;">Total @totalvillages Villages Found.</a>
+                              <ul class="pagination pagination-sm m-0 float-right">
+                                  @if (_villagePage == 1)
+                                  {
+                                      <li class="page-item disabled"><a class="page-link" @onclick="GetVillageDataOnPreviousPage">&laquo;</a></li>
+                                  }
+                                  @if (_villagePage != 1)
+                                  {
+                                      <li class="page-item"><a class="page-link" @onclick="GetVillageDataOnPreviousPage" href="" @onclick:preventDefault>&laquo;</a></li>
+                                      <li class="page-item"><a class="page-link" @onclick="GetVillageDataOnPreviousPage" href="" @onclick:preventDefault>...</a></li>
+                                  }
+                                  @if (totalVillagePages > 0)
+                                  {
+                                        @for (int i = _villagePage - 1; i < _villagePage + 2 ; i++)
+                                        {
+                                            int buttonNumber = i;
+                                            @if (buttonNumber < 1 || buttonNumber > totalVillagePages)
+                                            {
+                                            }
+                                            else
+                                            {
+                                                @if (buttonNumber == _villagePage)
+                                                {
+                                                        <li class="page-item active"><a class="page-link" @onclick="@(() => GetVillageDataByPageNumber(buttonNumber))" href="" @onclick:preventDefault>@i</a></li>
+                                                }
+                                                else
+                                                {
+                                                        <li class="page-item"><a class="page-link" @onclick="@(() => GetVillageDataByPageNumber(buttonNumber))" href="" @onclick:preventDefault>@i</a></li>
+                                                }
+                                            }
+                                        }
+                                  }
+                                  @if (_villagePage == totalVillagePages)
+                                  {
+                                      <li class="page-item disabled"><a class="page-link" @onclick="GetVillageDataOnNextPage">&raquo;</a></li>
+                                  }
+                                  @if (_villagePage != totalVillagePages)
+                                  {
+                                      <li class="page-item"><a class="page-link" @onclick="GetVillageDataOnNextPage" href="" @onclick:preventDefault>...</a></li>
+                                      <li class="page-item"><a class="page-link" @onclick="GetVillageDataOnNextPage" href="" @onclick:preventDefault>&raquo;</a></li>
+                                  }
+                              </ul>
+                          }
+                      </div>
+                  </div>
+
+                  <div class="tab-pane fade" id="custom-tabs-three-city" role="tabpanel" aria-labelledby="custom-tabs-three-city-tab">
+                      <div class="card-body table-responsive p-0">
+                          <table class="table text-nowrap">
+                              <thead>
+                                  <tr>
+                                      <th>All Cities</th>
+                                      <th></th>
+                                      <th></th>
+                                      <th>
+                                          <NavLink style="float:right;" href="#" data-toggle="modal" data-target="#modal-default-city">
+                                              <h3 class="card-title"><i class="fas fa-plus"></i>&nbsp;&nbsp;Add new City! </h3>
+                                          </NavLink>
+                                      </th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  @if (loading)
+                                  {
+                                      <tr>
+                                          <td colspan="12" class="text-center">
+                                              <span class="spinner-border spinner-border-lg align-center"></span>
+                                          </td>
+                                      </tr>
+                                  }
+                                  @if (!loading)
+                                  {
+                                      if (cities != null)
+                                      {
+                                          @foreach (var city in cities)
+                                          {
+                                              <tr>
+                                                  <td>@city.CityName</td>
+                                                  <td></td>
+                                                  <td></td>
+                                                  <td>
+                                                      <NavLink style="float:right;" href="#" data-toggle="modal" data-target="#modal-default-edit-city" @onclick="@(() => CurrentCity(city.Id, city.CityName))">
+                                                          <i class="far fa-edit" style="color:blue;"></i>
+                                                      </NavLink>
+                                                  </td>
+                                              </tr>
+                                          }
+                                      }
+                                  }
+                              </tbody>
+                          </table>
+                          @if (totalcityPages > 0)
+                          {
+                              <br />
+                              <a style="color:grey;">Total @totalcities Cities Found.</a>
+                              <ul class="pagination pagination-sm m-0 float-right">
+                                  @if (_cityPage == 1)
+                                  {
+                                      <li class="page-item disabled"><a class="page-link" @onclick="GetCityDataOnPreviousPage">&laquo;</a></li>
+                                  }
+                                  @if (_cityPage != 1)
+                                  {
+                                      <li class="page-item"><a class="page-link" @onclick="GetCityDataOnPreviousPage" href="" @onclick:preventDefault>&laquo;</a></li>
+                                      <li class="page-item"><a class="page-link" @onclick="GetCityDataOnPreviousPage" href="" @onclick:preventDefault>...</a></li>
+                                  }
+                                  @if (totalcityPages > 0)
+                                  {
+                                        @for (int i = _cityPage - 1; i < _cityPage + 2 ; i++)
+                                        {
+                                            int buttonNumber = i;
+                                            @if (buttonNumber < 1 || buttonNumber > totalcityPages)
+                                            {
+                                            }
+                                            else
+                                            {
+                                                @if (buttonNumber == _cityPage)
+                                                {
+                                                        <li class="page-item active"><a class="page-link" @onclick="@(() => GetCityDataByPageNumber(buttonNumber))" href="" @onclick:preventDefault>@i</a></li>
+                                                }
+                                                else
+                                                {
+                                                        <li class="page-item"><a class="page-link" @onclick="@(() => GetCityDataByPageNumber(buttonNumber))" href="" @onclick:preventDefault>@i</a></li>
+                                                }
+                                            }
+                                        }
+                                  }
+                                  @if (_cityPage == totalcityPages)
+                                  {
+                                      <li class="page-item disabled"><a class="page-link" @onclick="GetCityDataOnNextPage">&raquo;</a></li>
+                                  }
+                                  @if (_cityPage != totalcityPages)
+                                  {
+                                      <li class="page-item"><a class="page-link" @onclick="GetCityDataOnNextPage" href="" @onclick:preventDefault>...</a></li>
+                                      <li class="page-item"><a class="page-link" @onclick="GetCityDataOnNextPage" href="" @onclick:preventDefault>&raquo;</a></li>
+                                  }
+                              </ul>
+                          }
+                      </div>
+                  </div>
+
+                  <div class="tab-pane fade" id="custom-tabs-three-taluka" role="tabpanel" aria-labelledby="custom-tabs-three-taluka-tab">
+                      <div class="card-body table-responsive p-0">
+                          <table class="table text-nowrap">
+                              <thead>
+                                  <tr>
+                                      <th>All Talukas</th>
+                                      <th></th>
+                                      <th></th>
+                                      <th>
+                                          <NavLink style="float:right;" href="#" data-toggle="modal" data-target="#modal-default-taluka">
+                                              <h3 class="card-title"><i class="fas fa-plus"></i>&nbsp;&nbsp;Add new Taluka! </h3>
+                                          </NavLink>
+                                      </th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  @if (loading)
+                                  {
+                                      <tr>
+                                          <td colspan="12" class="text-center">
+                                              <span class="spinner-border spinner-border-lg align-center"></span>
+                                          </td>
+                                      </tr>
+                                  }
+                                  @if (!loading)
+                                  {
+                                      if (talukas != null)
+                                      {
+                                          @foreach (var tal in talukas)
+                                          {
+                                              <tr>
+                                                  <td>@tal.TalukaName</td>
+                                                  <td></td>
+                                                  <td></td>
+                                                  <td>
+                                                      <NavLink style="float:right;" href="#" data-toggle="modal" data-target="#modal-default-edit-taluka" @onclick="@(() => CurrentTaluka(tal.Id, tal.TalukaName))">
+                                                          <i class="far fa-edit" style="color:blue;"></i>
+                                                      </NavLink>
+                                                  </td>
+                                              </tr>
+                                          }
+                                      }
+                                  }
+                              </tbody>
+                          </table>
+                          @if (totaltalukaPages > 0)
+                          {
+                              <br />
+                              <a style="color:grey;">Total @totaltalukas Talukas Found.</a>
+                              <ul class="pagination pagination-sm m-0 float-right">
+                                  @if (_talukaPage == 1)
+                                  {
+                                      <li class="page-item disabled"><a class="page-link" @onclick="GetTalukaDataOnPreviousPage">&laquo;</a></li>
+                                  }
+                                  @if (_talukaPage != 1)
+                                  {
+                                      <li class="page-item"><a class="page-link" @onclick="GetTalukaDataOnPreviousPage" href="" @onclick:preventDefault>&laquo;</a></li>
+                                      <li class="page-item"><a class="page-link" @onclick="GetTalukaDataOnPreviousPage" href="" @onclick:preventDefault>...</a></li>
+                                  }
+                                  @if (totaltalukaPages > 0)
+                                  {
+                                        @for (int i = _talukaPage - 1; i < _talukaPage + 2 ; i++)
+                                        {
+                                            int buttonNumber = i;
+                                            @if (buttonNumber < 1 || buttonNumber > totaltalukaPages)
+                                            {
+                                            }
+                                            else
+                                            {
+                                                @if (buttonNumber == _talukaPage)
+                                                {
+                                                        <li class="page-item active"><a class="page-link" @onclick="@(() => GetTalukaDataByPageNumber(buttonNumber))" href="" @onclick:preventDefault>@i</a></li>
+                                                }
+                                                else
+                                                {
+                                                        <li class="page-item"><a class="page-link" @onclick="@(() => GetTalukaDataByPageNumber(buttonNumber))" href="" @onclick:preventDefault>@i</a></li>
+                                                }
+                                            }
+                                        }
+                                  }
+                                  @if (_talukaPage == totaltalukaPages)
+                                  {
+                                      <li class="page-item disabled"><a class="page-link" @onclick="GetTalukaDataOnNextPage">&raquo;</a></li>
+                                  }
+                                  @if (_talukaPage != totaltalukaPages)
+                                  {
+                                      <li class="page-item"><a class="page-link" @onclick="GetTalukaDataOnNextPage" href="" @onclick:preventDefault>...</a></li>
+                                      <li class="page-item"><a class="page-link" @onclick="GetTalukaDataOnNextPage" href="" @onclick:preventDefault>&raquo;</a></li>
+                                  }
+                              </ul>
+                          }
+                      </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            
+            </div>
+		</div>
+    </section>
+
+    <!-- Pop Up for add surname -->
+    <section class="content">
+      <div class="modal fade" id="modal-default">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">New Surname</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+                <DataAnnotationsValidator />
+                <div class="modal-body">
+                    <label>Surname: </label>
+                    <InputText @bind-Value="model.SurnameName" class="form-control" @oninput="(e)=> ModalValidation(e.Value.ToString())" />
+                    <ValidationMessage For="@(() => model.SurnameName)" style="color:red;" />
+                </div>
+                <div class="modal-footer justify-content-between">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        @if (isModalValid)
+                        {
+                            <button disabled="@loadBtn" class="btn btn-primary" style="float:right;" data-dismiss="modal" @onclick="AddSurname">
+                                  @if (loadBtn)
+                                  {
+                                      <span class="spinner-border spinner-border-sm mr-1"></span>
+                                  }
+                                  Submit
+                            </button>
+                        }
+                        else
+                        {
+                            <button disabled="@loadBtn" class="btn btn-primary disabled" style="float:right;">
+                                  Submit
+                            </button>
+                        }
+                    </div>
+            </EditForm>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pop Up for edit surname -->
+    <section class="content">
+      <div class="modal fade" id="modal-default-edit">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Edit Surname : @this.surname</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+                <DataAnnotationsValidator />
+                <div class="modal-body">
+                    <label>New Value: </label>
+                    <InputText @bind-Value="model.SurnameName" class="form-control" @oninput="(e)=> ModalValidation(e.Value.ToString())" />
+                    <ValidationMessage For="@(() => model.SurnameName)" style="color:red;" />
+                </div>
+                <div class="modal-footer justify-content-between">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        @if (isModalValid)
+                        {
+                            <button disabled="@loadBtn" class="btn btn-primary" style="float:right;" data-dismiss="modal" @onclick="EditSurname">
+                                  @if (loadBtn)
+                                  {
+                                      <span class="spinner-border spinner-border-sm mr-1"></span>
+                                  }
+                                  Submit
+                            </button>
+                        }
+                        else
+                        {
+                            <button disabled="@loadBtn" class="btn btn-primary disabled" style="float:right;">
+                                  Submit
+                            </button>
+                        }
+                </div>
+            </EditForm>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pop Up for add uc -->
+    <section class="content">
+      <div class="modal fade" id="modal-default-uc">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">New Union Counsil</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <EditForm Model="@model_uc" OnValidSubmit="OnValidSubmit_UC">
+                <DataAnnotationsValidator />
+                <div class="modal-body">
+                    <label>Union Counsil: </label>
+                    <InputText @bind-Value="model_uc.UnionCounsilName" class="form-control" @oninput="(e)=> ModalValidation(e.Value.ToString())" />
+                    <ValidationMessage For="@(() => model_uc.UnionCounsilName)" style="color:red;" />
+                </div>
+                <div class="modal-footer justify-content-between">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        @if (isModalValid)
+                        {
+                            <button disabled="@loadBtn" class="btn btn-primary" style="float:right;" data-dismiss="modal" @onclick="AddUC">
+                                  @if (loadBtn)
+                                  {
+                                      <span class="spinner-border spinner-border-sm mr-1"></span>
+                                  }
+                                  Submit
+                            </button>
+                        }
+                        else
+                        {
+                            <button disabled="@loadBtn" class="btn btn-primary disabled" style="float:right;">
+                                  Submit
+                            </button>
+                        }
+                </div>
+            </EditForm>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pop Up for edit uc -->
+    <section class="content">
+      <div class="modal fade" id="modal-default-edit-uc">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Edit Union Counsil : @this.UnionCounsilName</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <EditForm Model="@model" OnValidSubmit="OnValidSubmit_UC">
+                <DataAnnotationsValidator />
+                <div class="modal-body">
+                    <label>New Value: </label>
+                    <InputText @bind-Value="model_uc.UnionCounsilName" class="form-control" @oninput="(e)=> ModalValidation(e.Value.ToString())" />
+                    <ValidationMessage For="@(() => model_uc.UnionCounsilName)" style="color:red;" />
+                </div>
+                <div class="modal-footer justify-content-between">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        @if (isModalValid)
+                        {
+                            <button disabled="@loadBtn" class="btn btn-primary" style="float:right;" data-dismiss="modal" @onclick="EditUC">
+                                  @if (loadBtn)
+                                  {
+                                      <span class="spinner-border spinner-border-sm mr-1"></span>
+                                  }
+                                  Submit
+                            </button>
+                        }
+                        else
+                        {
+                            <button disabled="@loadBtn" class="btn btn-primary disabled" style="float:right;">
+                                  Submit
+                            </button>
+                        }
+                </div>
+            </EditForm>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pop Up for add village -->
+    <section class="content">
+      <div class="modal fade" id="modal-default-village">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">New Village</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <EditForm Model="@model_village" OnValidSubmit="OnValidSubmit_Village">
+                <DataAnnotationsValidator />
+                <div class="modal-body">
+                    <label>Village: </label>
+                    <InputText @bind-Value="model_village.VillageName" class="form-control" @oninput="(e)=> ModalValidation(e.Value.ToString())" />
+                    <ValidationMessage For="@(() => model_village.VillageName)" style="color:red;" />
+                </div>
+                <div class="modal-footer justify-content-between">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        @if (isModalValid)
+                        {
+                            <button disabled="@loadBtn" class="btn btn-primary" style="float:right;" data-dismiss="modal" @onclick="AddVillage">
+                                  @if (loadBtn)
+                                  {
+                                      <span class="spinner-border spinner-border-sm mr-1"></span>
+                                  }
+                                  Submit
+                            </button>
+                        }
+                        else
+                        {
+                            <button disabled="@loadBtn" class="btn btn-primary disabled" style="float:right;">
+                                  Submit
+                            </button>
+                        }
+                </div>
+            </EditForm>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pop Up for edit village -->
+    <section class="content">
+      <div class="modal fade" id="modal-default-edit-village">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Edit Village : @this.village</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <EditForm Model="@model_village" OnValidSubmit="OnValidSubmit_Village">
+                <DataAnnotationsValidator />
+                <div class="modal-body">
+                    <label>New Value: </label>
+                    <InputText @bind-Value="model_village.VillageName" class="form-control" @oninput="(e)=> ModalValidation(e.Value.ToString())" />
+                    <ValidationMessage For="@(() => model_village.VillageName)" style="color:red;" />
+                </div>
+                <div class="modal-footer justify-content-between">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        @if (isModalValid)
+                        {
+                            <button disabled="@loadBtn" class="btn btn-primary" style="float:right;" data-dismiss="modal" @onclick="EditVillage">
+                                  @if (loadBtn)
+                                  {
+                                      <span class="spinner-border spinner-border-sm mr-1"></span>
+                                  }
+                                  Submit
+                            </button>
+                        }
+                        else
+                        {
+                            <button disabled="@loadBtn" class="btn btn-primary disabled" style="float:right;">
+                                  Submit
+                            </button>
+                        }
+                </div>
+            </EditForm>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Pop Up for add city -->
+    <section class="content">
+      <div class="modal fade" id="modal-default-city">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">New City</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <EditForm Model="@model_city" OnValidSubmit="OnValidSubmit_City">
+                <DataAnnotationsValidator />
+                <div class="modal-body">
+                    <label>City: </label>
+                    <InputText @bind-Value="model_city.CityName" class="form-control" @oninput="(e)=> ModalValidation(e.Value.ToString())" />
+                    <ValidationMessage For="@(() => model_city.CityName)" style="color:red;" />
+                </div>
+                <div class="modal-footer justify-content-between">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        @if (isModalValid)
+                        {
+                            <button disabled="@loadBtn" class="btn btn-primary" style="float:right;" data-dismiss="modal" @onclick="AddCity">
+                                  @if (loadBtn)
+                                  {
+                                      <span class="spinner-border spinner-border-sm mr-1"></span>
+                                  }
+                                  Submit
+                            </button>
+                        }
+                        else
+                        {
+                            <button disabled="@loadBtn" class="btn btn-primary disabled" style="float:right;">
+                                  Submit
+                            </button>
+                        }
+                </div>
+            </EditForm>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pop Up for edit city -->
+    <section class="content">
+      <div class="modal fade" id="modal-default-edit-city">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Edit City : @this.city</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <EditForm Model="@model_city" OnValidSubmit="OnValidSubmit_City">
+                <DataAnnotationsValidator />
+                <div class="modal-body">
+                    <label>New Value: </label>
+                    <InputText @bind-Value="model_city.CityName" class="form-control" @oninput="(e)=> ModalValidation(e.Value.ToString())" />
+                    <ValidationMessage For="@(() => model_city.CityName)" style="color:red;" />
+                </div>
+                <div class="modal-footer justify-content-between">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        @if (isModalValid)
+                        {
+                            <button disabled="@loadBtn" class="btn btn-primary" style="float:right;" data-dismiss="modal" @onclick="EditCity">
+                                  @if (loadBtn)
+                                  {
+                                      <span class="spinner-border spinner-border-sm mr-1"></span>
+                                  }
+                                  Submit
+                            </button>
+                        }
+                        else
+                        {
+                            <button disabled="@loadBtn" class="btn btn-primary disabled" style="float:right;">
+                                  Submit
+                            </button>
+                        }
+                </div>
+            </EditForm>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pop Up for add taluka -->
+    <section class="content">
+      <div class="modal fade" id="modal-default-taluka">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">New Taluka</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <EditForm Model="@model_taluka" OnValidSubmit="OnValidSubmit_Taluka">
+                <DataAnnotationsValidator />
+                <div class="modal-body">
+                    <label>Taluka: </label>
+                    <InputText @bind-Value="model_taluka.TalukaName" class="form-control" @oninput="(e)=> ModalValidation(e.Value.ToString())" />
+                    <ValidationMessage For="@(() => model_taluka.TalukaName)" style="color:red;" />
+                </div>
+                <div class="modal-footer justify-content-between">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        @if (isModalValid)
+                        {
+                            <button disabled="@loadBtn" class="btn btn-primary" style="float:right;" data-dismiss="modal" @onclick="AddTaluka">
+                                  @if (loadBtn)
+                                  {
+                                      <span class="spinner-border spinner-border-sm mr-1"></span>
+                                  }
+                                  Submit
+                            </button>
+                        }
+                        else
+                        {
+                            <button disabled="@loadBtn" class="btn btn-primary disabled" style="float:right;">
+                                  Submit
+                            </button>
+                        }
+                </div>
+            </EditForm>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pop Up for edit taluka -->
+    <section class="content">
+      <div class="modal fade" id="modal-default-edit-taluka">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Edit Taluka : @this.taluka</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <EditForm Model="@model_taluka" OnValidSubmit="OnValidSubmit_Taluka">
+                <DataAnnotationsValidator />
+                <div class="modal-body">
+                    <label>New Taluka: </label>
+                    <InputText @bind-Value="model_taluka.TalukaName" class="form-control" @oninput="(e)=> ModalValidation(e.Value.ToString())" />
+                    <ValidationMessage For="@(() => model_taluka.TalukaName)" style="color:red;" />
+                </div>
+                <div class="modal-footer justify-content-between">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        @if (isModalValid)
+                        {
+                            <button disabled="@loadBtn" class="btn btn-primary" style="float:right;" data-dismiss="modal" @onclick="EditTaluka">
+                                  @if (loadBtn)
+                                  {
+                                      <span class="spinner-border spinner-border-sm mr-1"></span>
+                                  }
+                                  Submit
+                            </button>
+                        }
+                        else
+                        {
+                            <button disabled="@loadBtn" class="btn btn-primary disabled" style="float:right;">
+                                  Submit
+                            </button>
+                        }
+                </div>
+            </EditForm>
+          </div>
+        </div>
+      </div>
+    </section>
+
+@code {
+    private int _page = 1;
+    private int _UCpage = 1;
+    private int _villagePage = 1;
+    private int _cityPage = 1;
+    private int _talukaPage = 1;
+    private int pageSize = 10;
+    private int totalPages;
+    private int totalUCPages;
+    private int totalVillagePages;
+    private int totalcityPages;
+    private int totaltalukaPages;
+    private int totalSurnames;
+    private int totalUCs;
+    private int totalvillages;
+    private int totalcities;
+    private int totaltalukas;
+    private DropDownSettings model = new DropDownSettings();
+    private DropDownSettings_UC model_uc = new DropDownSettings_UC();
+    private DropDownSettings_Village model_village = new DropDownSettings_Village();
+    private DropDownSettings_City model_city = new DropDownSettings_City();
+    private DropDownSettings_Taluka model_taluka = new DropDownSettings_Taluka();
+    private IList<DropDownSettings> surnames;
+    private IList<DropDownSettings_UC> UCs;
+    private IList<DropDownSettings_Village> villages;
+    private IList<DropDownSettings_City> cities;
+    private IList<DropDownSettings_Taluka> talukas;
+    private bool loading;
+    private bool loadBtn;
+    private int surnameId;
+    private int ucId;
+    private int villageId;
+    private int cityId;
+    private int talukaId;
+    private string surname;
+    private string UnionCounsilName;
+    private string village;
+    private string city;
+    private string taluka;
+    private bool isModalValid = false;
+    private string baseUrl = "https://entrynowapi.azurewebsites.net/api/";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await SurnamesMethod();
+    }
+    private async Task SurnamesMethod()
+    {
+        model.SurnameName = "";
+        isModalValid = false;
+        loading = true;
+        await GetSurnames();
+        await GetSurnamesCount();
+        loading = false;
+    }
+    protected async Task OnInitializedAsync_UC()
+    {
+        await UcMethod();
+    }
+    private async Task UcMethod()
+    {
+        model_uc.UnionCounsilName = "";
+        isModalValid = false;
+        loading = true;
+        await GetUCs();
+        await GetUCsCount();
+        loading = false;
+    }
+    protected async Task OnInitializedAsync_Village()
+    {
+        await VillageMethod();
+    }
+    private async Task VillageMethod()
+    {
+        model_village.VillageName = "";
+        isModalValid = false;
+        loading = true;
+        await GetVillages();
+        await GetVillagesCount();
+        loading = false;
+    }
+    private async Task CityMethod()
+    {
+        model_city.CityName = "";
+        isModalValid = false;
+        loading = true;
+        await GetCity();
+        await GetCityCount();
+        loading = false;
+    }
+    private async Task ModalValidation(string value)
+    {
+        await Task.Yield();
+        if (!string.IsNullOrEmpty(value))
+        {
+            isModalValid = true;
+        }
+        else
+        {
+            isModalValid = false;
+        }
+    }
+    private async Task GetVillages()
+    {
+        try
+        {
+            using (System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient())
+            {
+                using (System.Net.Http.HttpResponseMessage response = await httpClient.GetAsync(baseUrl + "village/get?pageNumber=" + this._villagePage + "&perPage=" + this.pageSize))
+                {
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    this.villages = Newtonsoft.Json.JsonConvert.DeserializeObject<IList<DropDownSettings_Village>>(apiResponse);
+                }
+            }
+        }
+        catch(Exception e)
+        {
+            AlertService.Error(e.Message);
+            loading = false;
+            StateHasChanged();
+        }
+    }
+    private async Task GetVillagesCount()
+    {
+        try
+        {
+            using (System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient())
+            {
+                using (System.Net.Http.HttpResponseMessage response = await httpClient.GetAsync(baseUrl + "village/get/count"))
+                {
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    totalvillages = Int32.Parse(apiResponse);
+                    totalVillagePages = (int)Math.Ceiling((decimal)totalvillages / (decimal)pageSize);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            AlertService.Error(e.Message);
+            loading = false;
+            StateHasChanged();
+        }
+    }
+    protected async Task OnInitializedAsync_City()
+    {
+        await CityMethod();
+    }
+    private async Task GetCity()
+    {
+        try
+        {
+            using (System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient())
+            {
+                using (System.Net.Http.HttpResponseMessage response = await httpClient.GetAsync(baseUrl + "city/get?pageNumber=" + this._cityPage + "&perPage=" + this.pageSize))
+                {
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    this.cities = Newtonsoft.Json.JsonConvert.DeserializeObject<IList<DropDownSettings_City>>(apiResponse);
+                }
+            }
+        }
+        catch(Exception e)
+        {
+            AlertService.Error(e.Message);
+            loading = false;
+            StateHasChanged();
+        }
+    }
+    private async Task GetCityCount()
+    {
+        try
+        {
+            using (System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient())
+            {
+                using (System.Net.Http.HttpResponseMessage response = await httpClient.GetAsync(baseUrl + "city/get/count"))
+                {
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    totalcities = Int32.Parse(apiResponse);
+                    totalcityPages = (int)Math.Ceiling((decimal)totalcities / (decimal)pageSize);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            AlertService.Error(e.Message);
+            loading = false;
+            StateHasChanged();
+        }
+    }
+    protected async Task OnInitializedAsync_Taluka()
+    {
+        await TalukaMethod();
+    }
+    private async Task TalukaMethod()
+    {
+        model_taluka.TalukaName = "";
+        isModalValid = false;
+        loading = true;
+        await GetTaluka();
+        await GetTalukaCount();
+        loading = false;
+    }
+    //private async Task ModalValidation(string value)
+    //{
+    //    if (!string.IsNullOrEmpty(value))
+    //    {
+    //        isModalValid = true;
+    //    }
+    //    else
+    //    {
+    //        isModalValid = false;
+    //    }
+    //}
+    private async Task GetTaluka()
+    {
+        try
+        {
+            using (System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient())
+            {
+                using (System.Net.Http.HttpResponseMessage response = await httpClient.GetAsync(baseUrl + "taluka/get?pageNumber=" + this._talukaPage + "&perPage=" + this.pageSize))
+                {
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    this.talukas = Newtonsoft.Json.JsonConvert.DeserializeObject<IList<DropDownSettings_Taluka>>(apiResponse);
+                }
+            }
+        }
+        catch(Exception e)
+        {
+            AlertService.Error(e.Message);
+            loading = false;
+            StateHasChanged();
+        }
+    }
+    private async Task GetTalukaCount()
+    {
+        try
+        {
+            using (System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient())
+            {
+                using (System.Net.Http.HttpResponseMessage response = await httpClient.GetAsync(baseUrl + "taluka/get/count"))
+                {
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    totaltalukas = Int32.Parse(apiResponse);
+                    totaltalukaPages = (int)Math.Ceiling((decimal)totaltalukas / (decimal)pageSize);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            AlertService.Error(e.Message);
+            loading = false;
+            StateHasChanged();
+        }
+    }
+    private async Task GetUCs()
+    {
+        try
+        {
+            using (System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient())
+            {
+                using (System.Net.Http.HttpResponseMessage response = await httpClient.GetAsync(baseUrl + "unioncounsil/get?pageNumber=" + this._UCpage + "&perPage=" + this.pageSize))
+                {
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    this.UCs = Newtonsoft.Json.JsonConvert.DeserializeObject<IList<DropDownSettings_UC>>(apiResponse);
+                }
+            }
+        }
+        catch(Exception e)
+        {
+            AlertService.Error(e.Message);
+            loading = false;
+            StateHasChanged();
+        }
+    }
+    private async Task GetUCsCount()
+    {
+        try
+        {
+            using (System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient())
+            {
+                using (System.Net.Http.HttpResponseMessage response = await httpClient.GetAsync(baseUrl + "unioncounsil/get/count"))
+                {
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    totalUCs = Int32.Parse(apiResponse);
+                    totalUCPages = (int)Math.Ceiling((decimal)totalUCs / (decimal)pageSize);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            AlertService.Error(e.Message);
+            loading = false;
+            StateHasChanged();
+        }
+    }
+    private async Task GetSurnames()
+    {
+        try
+        {
+            using (System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient())
+            {
+                using (System.Net.Http.HttpResponseMessage response = await httpClient.GetAsync(baseUrl + "surname/get?pageNumber=" + this._page + "&perPage=" + this.pageSize))
+                {
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    this.surnames = Newtonsoft.Json.JsonConvert.DeserializeObject<IList<DropDownSettings>>(apiResponse);
+                }
+            }
+        }
+        catch(Exception e)
+        {
+            AlertService.Error(e.Message);
+            loading = false;
+            StateHasChanged();
+        }
+    }
+    private async void OnValidSubmit()
+    {
+        await Task.Yield();
+        this.surname = model.SurnameName;
+    }
+    private async void OnValidSubmit_UC()
+    {
+        await Task.Yield();
+        this.UnionCounsilName = model_uc.UnionCounsilName;
+    }
+    private async void OnValidSubmit_Village()
+    {
+        await Task.Yield();
+        this.village = model_village.VillageName;
+    }
+    private async void OnValidSubmit_City()
+    {
+        await Task.Yield();
+        this.city = model_city.CityName;
+    }
+    private async void OnValidSubmit_Taluka()
+    {
+        await Task.Yield();
+        this.taluka = model_taluka.TalukaName;
+    }
+    private async Task AddUC()
+    {
+        await Task.Yield();
+        AlertService.Clear();
+        try
+        {
+            if (!string.IsNullOrEmpty(model_uc.UnionCounsilName))
+            {
+                loadBtn = true;
+                model_uc.Id = 0;
+                using (System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient())
+                {
+                    var postData = Newtonsoft.Json.JsonConvert.SerializeObject(model_uc);
+                    var content = new System.Net.Http.StringContent(postData, System.Text.Encoding.UTF8, "application/json");
+                    using (System.Net.Http.HttpResponseMessage response = await httpClient.PutAsync(baseUrl + "unioncounsil/save", content))
+                    {
+                        string apiResponse = await response.Content.ReadAsStringAsync();
+                        if(response.StatusCode == System.Net.HttpStatusCode.Created)
+                        {
+                            AlertService.Success("New Union Counsil Added Successfully", keepAfterRouteChange: true);
+                            loadBtn = false;
+                            await UcMethod();
+                            StateHasChanged();
+                        }
+                        if(response.StatusCode == System.Net.HttpStatusCode.Conflict)
+                        {
+                            AlertService.Success("Union Counsil Added Exists!", keepAfterRouteChange: true);
+                            loadBtn = false;
+                            await UcMethod();
+                            StateHasChanged();
+                        }
+                    }
+                }
+
+            }
+        }
+        catch (Exception ex)
+        {
+            AlertService.Error("Failed to Add New Surname, Error: " + ex.Message);
+            loadBtn = false;
+            StateHasChanged();
+        }
+    }
+    private async Task AddVillage()
+    {
+        AlertService.Clear();
+        try
+        {
+            if (!string.IsNullOrEmpty(model_village.VillageName))
+            {
+                loadBtn = true;
+                model_village.Id = 0;
+                using (System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient())
+                {
+                    var postData = Newtonsoft.Json.JsonConvert.SerializeObject(model_village);
+                    var content = new System.Net.Http.StringContent(postData, System.Text.Encoding.UTF8, "application/json");
+                    using (System.Net.Http.HttpResponseMessage response = await httpClient.PutAsync(baseUrl + "village/save", content))
+                    {
+                        string apiResponse = await response.Content.ReadAsStringAsync();
+                        if(response.StatusCode == System.Net.HttpStatusCode.Created)
+                        {
+                            AlertService.Success("New Village Added Successfully", keepAfterRouteChange: true);
+                            loadBtn = false;
+                            await VillageMethod();
+                            StateHasChanged();
+                        }
+                        if(response.StatusCode == System.Net.HttpStatusCode.Conflict)
+                        {
+                            AlertService.Success("Village Already Exists!", keepAfterRouteChange: true);
+                            loadBtn = false;
+                            await VillageMethod();
+                            StateHasChanged();
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            AlertService.Error("Failed to Add New Village, Error: " + ex.Message);
+            loadBtn = false;
+            StateHasChanged();
+        }
+    }
+    private async Task AddCity()
+    {
+        AlertService.Clear();
+        try
+        {
+            if (!string.IsNullOrEmpty(model_city.CityName))
+            {
+                loadBtn = true;
+                model_city.Id = 0;
+                using (System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient())
+                {
+                    var postData = Newtonsoft.Json.JsonConvert.SerializeObject(model_city);
+                    var content = new System.Net.Http.StringContent(postData, System.Text.Encoding.UTF8, "application/json");
+                    using (System.Net.Http.HttpResponseMessage response = await httpClient.PutAsync(baseUrl + "city/save", content))
+                    {
+                        string apiResponse = await response.Content.ReadAsStringAsync();
+                        if(response.StatusCode == System.Net.HttpStatusCode.Created)
+                        {
+                            AlertService.Success("New City Added Successfully", keepAfterRouteChange: true);
+                            loadBtn = false;
+                            await CityMethod();
+                            StateHasChanged();
+                        }
+                        if(response.StatusCode == System.Net.HttpStatusCode.Conflict)
+                        {
+                            AlertService.Success("City Already Exists!", keepAfterRouteChange: true);
+                            loadBtn = false;
+                            await CityMethod();
+                            StateHasChanged();
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            AlertService.Error("Failed to Add New City, Error: " + ex.Message);
+            loadBtn = false;
+            StateHasChanged();
+        }
+    }
+    private async Task AddTaluka()
+    {
+        AlertService.Clear();
+        try
+        {
+            if (!string.IsNullOrEmpty(model_taluka.TalukaName))
+            {
+                loadBtn = true;
+                model_taluka.Id = 0;
+                using (System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient())
+                {
+                    var postData = Newtonsoft.Json.JsonConvert.SerializeObject(model_taluka);
+                    var content = new System.Net.Http.StringContent(postData, System.Text.Encoding.UTF8, "application/json");
+                    using (System.Net.Http.HttpResponseMessage response = await httpClient.PutAsync(baseUrl + "taluka/save", content))
+                    {
+                        string apiResponse = await response.Content.ReadAsStringAsync();
+                        if(response.StatusCode == System.Net.HttpStatusCode.Created)
+                        {
+                            AlertService.Success("New taluka Successfully", keepAfterRouteChange: true);
+                            loadBtn = false;
+                            await TalukaMethod();
+                            StateHasChanged();
+                        }
+                        if(response.StatusCode == System.Net.HttpStatusCode.Conflict)
+                        {
+                            AlertService.Success("taluka Already Exists!", keepAfterRouteChange: true);
+                            loadBtn = false;
+                            await TalukaMethod();
+                            StateHasChanged();
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            AlertService.Error("Failed to Add New taluka, Error: " + ex.Message);
+            loadBtn = false;
+            StateHasChanged();
+        }
+    }
+    private async Task AddSurname()
+    {
+        AlertService.Clear();
+        try
+        {
+            if (!string.IsNullOrEmpty(model.SurnameName))
+            {
+                loadBtn = true;
+                model.Id = 0;
+                using (System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient())
+                {
+                    var postData = Newtonsoft.Json.JsonConvert.SerializeObject(model);
+                    var content = new System.Net.Http.StringContent(postData, System.Text.Encoding.UTF8, "application/json");
+                    using (System.Net.Http.HttpResponseMessage response = await httpClient.PutAsync(baseUrl + "surname/save", content))
+                    {
+                        string apiResponse = await response.Content.ReadAsStringAsync();
+                        if(response.StatusCode == System.Net.HttpStatusCode.Created)
+                        {
+                            AlertService.Success("New Surname Added Successfully", keepAfterRouteChange: true);
+                            loadBtn = false;
+                            await SurnamesMethod();
+                            StateHasChanged();
+                        }
+                        if(response.StatusCode == System.Net.HttpStatusCode.Conflict)
+                        {
+                            AlertService.Error("Surname Already Exists!", keepAfterRouteChange: true);
+                            loadBtn = false;
+                            await SurnamesMethod();
+                            StateHasChanged();
+                        }
+                    }
+                }
+
+            }
+        }
+        catch (Exception ex)
+        {
+            AlertService.Error("Failed to Add New Surname, Error: " + ex.Message);
+            loadBtn = false;
+            StateHasChanged();
+        }
+    }
+    private async void CurrentSurname(int id, string value)
+    {
+        await Task.Yield();
+        this.surnameId = id;
+        this.surname = value;
+        model.SurnameName = value;
+        StateHasChanged();
+    }
+    private async void CurrentUC(int id, string value)
+    {
+        await Task.Yield();
+        this.ucId = id;
+        this.UnionCounsilName = value;
+        model_uc.UnionCounsilName = value;
+        StateHasChanged();
+    }
+    private async void CurrentVillage(int id, string value)
+    {
+        await Task.Yield();
+        this.villageId = id;
+        this.village = value;
+        model_village.VillageName = value;
+        StateHasChanged();
+    }
+    private async void CurrentCity(int id, string value)
+    {
+        await Task.Yield();
+        this.cityId = id;
+        this.city = value;
+        model_city.CityName = value;
+        StateHasChanged();
+    }
+    private async void CurrentTaluka(int id, string value)
+    {
+        await Task.Yield();
+        this.talukaId = id;
+        this.taluka = value;
+        model_taluka.TalukaName = value;
+        StateHasChanged();
+    }
+    private async void EditUC()
+    {
+        AlertService.Clear();
+        try
+        {
+            if (!string.IsNullOrEmpty(this.UnionCounsilName))
+            {
+                loadBtn = true;
+                model_uc.Id = this.ucId;
+                using (System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient())
+                {
+                    var postData = Newtonsoft.Json.JsonConvert.SerializeObject(model_uc);
+                    var content = new System.Net.Http.StringContent(postData, System.Text.Encoding.UTF8, "application/json");
+                    using (System.Net.Http.HttpResponseMessage response = await httpClient.PutAsync(baseUrl + "unioncounsil/save", content))
+                    {
+                        string apiResponse = await response.Content.ReadAsStringAsync();
+                        if(response.StatusCode == System.Net.HttpStatusCode.OK)
+                        {
+                            AlertService.Success("Union Counsil Edited Successfully", keepAfterRouteChange: true);
+                            loadBtn = false;
+                            await UcMethod();
+                            StateHasChanged();
+                        }
+                        if(response.StatusCode == System.Net.HttpStatusCode.Conflict)
+                        {
+                            AlertService.Success("Union Counsil Added Exists!", keepAfterRouteChange: true);
+                            loadBtn = false;
+                            await UcMethod();
+                            StateHasChanged();
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            AlertService.Error("Failed to Edit Surname, Error: " + ex.Message);
+            loadBtn = false;
+            StateHasChanged();
+        }
+    }
+    private async void EditVillage()
+    {
+        AlertService.Clear();
+        try
+        {
+            if (!string.IsNullOrEmpty(this.village))
+            {
+                loadBtn = true;
+                model_village.Id = this.villageId;
+                using (System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient())
+                {
+                    var postData = Newtonsoft.Json.JsonConvert.SerializeObject(model_village);
+                    var content = new System.Net.Http.StringContent(postData, System.Text.Encoding.UTF8, "application/json");
+                    using (System.Net.Http.HttpResponseMessage response = await httpClient.PutAsync(baseUrl + "village/save", content))
+                    {
+                        string apiResponse = await response.Content.ReadAsStringAsync();
+                        if(response.StatusCode == System.Net.HttpStatusCode.OK)
+                        {
+                            AlertService.Success("Village Edited Successfully", keepAfterRouteChange: true);
+                            loadBtn = false;
+                            await VillageMethod();
+                            StateHasChanged();
+                        }
+                        if(response.StatusCode == System.Net.HttpStatusCode.Conflict)
+                        {
+                            AlertService.Success("Village Already Exists!", keepAfterRouteChange: true);
+                            loadBtn = false;
+                            await VillageMethod();
+                            StateHasChanged();
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            AlertService.Error("Failed to Edit Village, Error: " + ex.Message);
+            loadBtn = false;
+            StateHasChanged();
+        }
+    }
+    private async void EditCity()
+    {
+        AlertService.Clear();
+        try
+        {
+            if (!string.IsNullOrEmpty(this.city))
+            {
+                loadBtn = true;
+                model_city.Id = this.cityId;
+                using (System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient())
+                {
+                    var postData = Newtonsoft.Json.JsonConvert.SerializeObject(model_city);
+                    var content = new System.Net.Http.StringContent(postData, System.Text.Encoding.UTF8, "application/json");
+                    using (System.Net.Http.HttpResponseMessage response = await httpClient.PutAsync(baseUrl + "city/save", content))
+                    {
+                        string apiResponse = await response.Content.ReadAsStringAsync();
+                        if(response.StatusCode == System.Net.HttpStatusCode.OK)
+                        {
+                            AlertService.Success("City Edited Successfully", keepAfterRouteChange: true);
+                            loadBtn = false;
+                            await CityMethod();
+                            StateHasChanged();
+                        }
+                        if(response.StatusCode == System.Net.HttpStatusCode.Conflict)
+                        {
+                            AlertService.Success("City Already Exists!", keepAfterRouteChange: true);
+                            loadBtn = false;
+                            await CityMethod();
+                            StateHasChanged();
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            AlertService.Error("Failed to Edit City, Error: " + ex.Message);
+            loadBtn = false;
+            StateHasChanged();
+        }
+    }
+    private async void EditTaluka()
+    {
+        AlertService.Clear();
+        try
+        {
+            if (!string.IsNullOrEmpty(this.taluka))
+            {
+                loadBtn = true;
+                model_taluka.Id = this.talukaId;
+                using (System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient())
+                {
+                    var postData = Newtonsoft.Json.JsonConvert.SerializeObject(model_taluka);
+                    var content = new System.Net.Http.StringContent(postData, System.Text.Encoding.UTF8, "application/json");
+                    using (System.Net.Http.HttpResponseMessage response = await httpClient.PutAsync(baseUrl + "taluka/save", content))
+                    {
+                        string apiResponse = await response.Content.ReadAsStringAsync();
+                        if(response.StatusCode == System.Net.HttpStatusCode.OK)
+                        {
+                            AlertService.Success("taluka Edited Successfully", keepAfterRouteChange: true);
+                            loadBtn = false;
+                            await TalukaMethod();
+                            StateHasChanged();
+                        }
+                        if(response.StatusCode == System.Net.HttpStatusCode.Conflict)
+                        {
+                            AlertService.Success("taluka Already Exists!", keepAfterRouteChange: true);
+                            loadBtn = false;
+                            await TalukaMethod();
+                            StateHasChanged();
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            AlertService.Error("Failed to Edit taluka, Error: " + ex.Message);
+            loadBtn = false;
+            StateHasChanged();
+        }
+    }
+    private async void EditSurname()
+    {
+        AlertService.Clear();
+        try
+        {
+            if (!string.IsNullOrEmpty(this.surname))
+            {
+                loadBtn = true;
+                model.Id = this.surnameId;
+                using (System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient())
+                {
+                    var postData = Newtonsoft.Json.JsonConvert.SerializeObject(model);
+                    var content = new System.Net.Http.StringContent(postData, System.Text.Encoding.UTF8, "application/json");
+                    using (System.Net.Http.HttpResponseMessage response = await httpClient.PutAsync(baseUrl + "surname/save", content))
+                    {
+                        string apiResponse = await response.Content.ReadAsStringAsync();
+                        if(response.StatusCode == System.Net.HttpStatusCode.OK)
+                        {
+                            AlertService.Success("Surname Edited Successfully", keepAfterRouteChange: true);
+                            loadBtn = false;
+                            await SurnamesMethod();
+                            StateHasChanged();
+                        }
+                        if(response.StatusCode == System.Net.HttpStatusCode.Conflict)
+                        {
+                            AlertService.Error("Surname Already Exists!", keepAfterRouteChange: true);
+                            loadBtn = false;
+                            await SurnamesMethod();
+                            StateHasChanged();
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            AlertService.Error("Failed to Edit Surname, Error: " + ex.Message);
+            loadBtn = false;
+            StateHasChanged();
+        }
+    }
+    private async Task GetSurnamesCount()
+    {
+        try
+        {
+            using (System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient())
+            {
+                using (System.Net.Http.HttpResponseMessage response = await httpClient.GetAsync(baseUrl + "surname/get/count"))
+                {
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    totalSurnames = Int32.Parse(apiResponse);
+                    totalPages = (int)Math.Ceiling((decimal)totalSurnames / (decimal)pageSize);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            AlertService.Error(e.Message);
+            loading = false;
+            StateHasChanged();
+        }
+    }
+    private async Task GetUCDataOnPreviousPage()
+    {
+        loading = true;
+        _UCpage -= 1;
+        await GetUCs();
+        loading = false;
+    }
+    private async Task GetUCDataByPageNumber(int pageNumber)
+    {
+        loading = true;
+        _UCpage = pageNumber;
+        await GetUCs();
+        loading = false;
+    }
+    private async Task GetUCDataOnNextPage()
+    {
+        loading = true;
+        _UCpage += 1;
+        await GetUCs();
+        loading = false;
+    }
+    private async Task GetSurnamesDataOnPreviousPage()
+    {
+        loading = true;
+        _page -= 1;
+        await GetSurnames();
+        loading = false;
+    }
+    private async Task GetSurnamesDataByPageNumber(int pageNumber)
+    {
+        loading = true;
+        _page = pageNumber;
+        await GetSurnames();
+        loading = false;
+    }
+    private async Task GetSurnamesDataOnNextPage()
+    {
+        loading = true;
+        _page += 1;
+        await GetSurnames();
+        loading = false;
+    }
+    private async Task GetVillageDataOnPreviousPage()
+    {
+        loading = true;
+        _villagePage -= 1;
+        await GetVillages();
+        loading = false;
+    }
+    private async Task GetVillageDataByPageNumber(int pageNumber)
+    {
+        loading = true;
+        _villagePage = pageNumber;
+        await GetVillages();
+        loading = false;
+    }
+    private async Task GetVillageDataOnNextPage()
+    {
+        loading = true;
+        _villagePage += 1;
+        await GetVillages();
+        loading = false;
+    }
+    private async Task GetCityDataOnPreviousPage()
+    {
+        loading = true;
+        _cityPage -= 1;
+        await GetCity();
+        loading = false;
+    }
+    private async Task GetCityDataByPageNumber(int pageNumber)
+    {
+        loading = true;
+        _cityPage = pageNumber;
+        await GetCity();
+        loading = false;
+    }
+    private async Task GetCityDataOnNextPage()
+    {
+        loading = true;
+        _cityPage += 1;
+        await GetCity();
+        loading = false;
+    }
+    private async Task GetTalukaDataOnPreviousPage()
+    {
+        loading = true;
+        _talukaPage -= 1;
+        await GetTaluka();
+        loading = false;
+    }
+    private async Task GetTalukaDataByPageNumber(int pageNumber)
+    {
+        loading = true;
+        _talukaPage = pageNumber;
+        await GetTaluka();
+        loading = false;
+    }
+    private async Task GetTalukaDataOnNextPage()
+    {
+        loading = true;
+        _talukaPage += 1;
+        await GetTaluka();
+        loading = false;
+    }
+}

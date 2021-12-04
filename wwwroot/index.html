@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Entry Now - Web</title>
+    <base href="/" />
+
+    <!-- AdminLTE -->
+    <link href="Admin_LTE/fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="Admin_LTE/plugins/fontawesome-free/css/all.min.css">
+    <link href="AdminLTE/css/ionicons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="Admin_LTE/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+    <link rel="stylesheet" href="Admin_LTE/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+    <link rel="stylesheet" href="Admin_LTE/plugins/jqvmap/jqvmap.min.css">
+    <link rel="stylesheet" href="Admin_LTE/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="Admin_LTE/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+    <link rel="stylesheet" href="Admin_LTE/plugins/daterangepicker/daterangepicker.css">
+    <link rel="stylesheet" href="Admin_LTE/plugins/summernote/summernote-bs4.min.css">
+
+    <style>
+        .centeredLoader {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 500px;
+        }
+    </style>
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+    <app>
+        <!--Loading...-->
+        <div class="centeredLoader">
+            <span class="spinner-border"></span>
+        </div>
+    </app>
+
+    <script src="_framework/blazor.webassembly.js"></script>
+
+    <!-- AdminLTE -->
+    <script src="Admin_LTE/plugins/jquery/jquery.min.js"></script>
+    <script src="Admin_LTE/plugins/jquery-ui/jquery-ui.min.js"></script>
+    <script>
+        $.widget.bridge('uibutton', $.ui.button)
+    </script>
+    <script src="Admin_LTE/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="Admin_LTE/plugins/chart.js/Chart.min.js"></script>
+    <script src="Admin_LTE/plugins/sparklines/sparkline.js"></script>
+    <script src="Admin_LTE/plugins/jqvmap/jquery.vmap.min.js"></script>
+    <script src="Admin_LTE/plugins/jqvmap/maps/jquery.vmap.usa.js"></script>
+    <script src="Admin_LTE/plugins/jquery-knob/jquery.knob.min.js"></script>
+    <script src="Admin_LTE/plugins/moment/moment.min.js"></script>
+    <script src="Admin_LTE/plugins/daterangepicker/daterangepicker.js"></script>
+    <script src="Admin_LTE/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script src="Admin_LTE/plugins/summernote/summernote-bs4.min.js"></script>
+    <script src="Admin_LTE/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+    <script src="Admin_LTE/dist/js/adminlte.js"></script>
+    <script src="Admin_LTE/dist/js/demo.js"></script>
+    <script src="Admin_LTE/dist/js/pages/dashboard.js"></script>
+</body>
+</html>

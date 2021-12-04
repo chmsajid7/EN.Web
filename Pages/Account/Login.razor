@@ -1,0 +1,87 @@
+﻿@page "/account/login"
+@inject IAccountService AccountService
+@inject IAlertService AlertService
+@inject NavigationManager NavigationManager
+
+  <div class="login-logo">
+    <a href=""><b>Entry</b>&nbsp;Now</a>
+  </div>
+  <div class="card">
+    <div class="card-body login-card-body">
+        <EditForm Model="@login" OnValidSubmit="OnValidSubmit">
+              <p class="login-box-msg">Enter the details below, to Sign In</p>
+                <DataAnnotationsValidator />
+                <div class="form-group">
+                    <label>Username</label>
+                    <InputText @bind-Value="login.Username" class="form-control" placeholder="Username" />
+                    <ValidationMessage For="@(() => login.Username)" />
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <InputText @bind-Value="login.Password" type="password" class="form-control" placeholder="Password" />
+                    <ValidationMessage For="@(() => login.Password)" />
+                </div>
+                <div class="row">
+                  <div class="col-8">
+                    <div class="icheck-primary">
+                      <input type="checkbox" id="remember" @bind="login.RememberMe">
+                      <label for="remember">
+                        Remember Me
+                      </label>
+                    </div>
+                  </div>
+                  <div class="col-4">
+                    <button disabled="@loading" class="btn btn-primary btn-block" style="width:100px;">
+                        @if (loading) 
+                        {
+                            <span class="spinner-border spinner-border-sm mr-1"></span>
+                        }
+                        Sign In
+                    </button>
+                  </div>
+                </div>
+         </EditForm>
+    </div>
+  </div>
+
+@code {
+    private Models.Account.Login login = new Models.Account.Login();
+    private bool loading;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var res = await AccountService.Rememberedredentials();
+        if(res != null)
+        {
+            login.Username = res.Username;
+            login.Password = res.Password;
+        }
+    }
+
+    private async void OnValidSubmit()
+    {
+        AlertService.Clear();
+        loading = true;
+        try
+        {
+            if (await AccountService.Login(login))
+            {
+                await Task.Delay(200);
+                var returnUrl = NavigationManager.QueryString("returnUrl") ?? "";
+                NavigationManager.NavigateTo(returnUrl);
+            }
+            else
+            {
+                AlertService.Error("Username or password is incorrect");
+                loading = false;
+                StateHasChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            AlertService.Error(ex.Message);
+            loading = false;
+            StateHasChanged();
+        }
+    }
+}

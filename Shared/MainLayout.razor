@@ -1,0 +1,25 @@
+﻿@inherits LayoutComponentBase
+@inject IAccountService AccountService
+@inject NavigationManager NavigationManager
+
+<div class="wrapper">
+    @if (LoggedIn)
+    {
+        <NavMenu />
+    }
+    <div class="content-wrapper">
+        <Alert />
+        @Body
+    </div>
+    @if (LoggedIn)
+    {
+        <Footer />
+    }
+</div>
+
+@code {
+    public bool LoggedIn 
+    {
+        get { return AccountService.User != null; }
+    }
+}

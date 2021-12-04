@@ -1,0 +1,161 @@
+﻿@page "/"
+@attribute [Authorize]
+@inject IAlertService AlertService
+
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Home</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item active">Welcome to the Home Page </li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- Small boxes (Stat box) -->
+        <div class="row">
+            <div class="col-lg-3 col-6">
+                <!-- small box -->
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        @if (entriesLoading)
+                        {
+                            <span class="spinner-border spinner-border-sm" style="color:white;"></span>
+                        }
+                        else
+                        {
+                            <h3>@entriesCount</h3>
+                        }
+                        <p>Total Entries</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-th-list"></i>
+                    </div>
+                    <a href="entries/index" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-6">
+                <!-- small box -->
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        @if (referencesLoading)
+                        {
+                            <span class="spinner-border spinner-border-sm" style="color:white;"></span>
+                        }
+                        else
+                        {
+                            <h3>@referencesCount</h3>
+                        }
+                        <p>Total References</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <a href="references/index" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-6">
+                <!-- small box -->
+                <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h3>Reports</h3>
+                        <p>Generate Reports</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-file"></i>
+                    </div>
+                    <a href="reports/index" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-6">
+                <!-- small box -->
+                <div class="small-box bg-danger">
+                    <div class="inner">
+                        <h3>Settings</h3>
+                        <p>Change Settings</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-wrench"></i>
+                    </div>
+                    <a href="settings/index" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+            <!-- ./col -->
+        </div>
+        <!-- /.row -->
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+@code{
+    private bool entriesLoading;
+    private bool referencesLoading;
+    private int entriesCount;
+    private int referencesCount;
+    private string baseUrl = "https://entrynowapi.azurewebsites.net/api/";
+
+    protected override async Task OnInitializedAsync()
+    {
+        entriesLoading = true;
+        referencesLoading = true;
+        await GetEntriesCount();
+        await GetReferencesCount();
+    }
+    private async Task GetEntriesCount()
+    {
+        //entriesLoading = true;
+        try
+        {
+            using (System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient())
+            {
+                using (System.Net.Http.HttpResponseMessage response = await httpClient.GetAsync(baseUrl + "voter/get/count"))
+                {
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    entriesCount = Int32.Parse(apiResponse);
+                }
+            }
+            entriesLoading = false;
+        }
+        catch (Exception e)
+        {
+            AlertService.Clear();
+            AlertService.Error(e.Message);
+            entriesLoading = false;
+            StateHasChanged();
+        }
+    }
+    private async Task GetReferencesCount()
+    {
+        //referencesLoading = true;
+        try
+        {
+            using (System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient())
+            {
+                using (System.Net.Http.HttpResponseMessage response = await httpClient.GetAsync("https://entrynowapi.azurewebsites.net/api/reference/get/count"))
+                {
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    referencesCount = Int32.Parse(apiResponse);
+                }
+            }
+            referencesLoading = false;
+        }
+        catch (Exception e)
+        {
+            AlertService.Error(e.Message);
+            referencesLoading = false;
+            StateHasChanged();
+        }
+    }
+}
