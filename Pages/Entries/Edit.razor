@@ -651,7 +651,7 @@
         AlertService.Clear();
         loading = true;
 
-        if (string.IsNullOrEmpty(this.referenceValue))
+        if (string.IsNullOrEmpty(this.referenceValue) && checkboxvalue is false)
         {
             AlertService.Error("Reference is required!", keepAfterRouteChange: true);
             loading = false;

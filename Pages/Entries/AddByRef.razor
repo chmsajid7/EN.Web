@@ -3,9 +3,6 @@
 @attribute [Authorize]
 @inject IAlertService AlertService
 @inject NavigationManager NavigationManager
-@*@using Microsoft.JSInterop
-@inject IJSRuntime JSRuntime;*@
-
 
     <section class="content-header">
       <div class="container-fluid">
@@ -376,6 +373,15 @@
     {
         AlertService.Clear();
         loading = true;
+
+        if (string.IsNullOrEmpty(this.referenceValue) && checkboxvalue is false)
+        {
+            AlertService.Error("Reference is required!", keepAfterRouteChange: true);
+            loading = false;
+            StateHasChanged();
+            return;
+        }
+
         try
         {
             if (await AddEntryAsync())

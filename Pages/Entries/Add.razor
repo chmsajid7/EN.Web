@@ -1,9 +1,5 @@
 ﻿@page "/entries/add"
-@*@using EN.Web.Constants*@
 @using global::EN.Web.Constants
-@using global::EN.Web.Helpers
-@using global::EN.Web.Models
-@using global::EN.Web.Services
 @attribute [Authorize]
 @inject IAlertService AlertService
 @inject NavigationManager NavigationManager
@@ -422,7 +418,7 @@
         AlertService.Clear();
         loading = true;
 
-        if (string.IsNullOrEmpty(this.referenceValue))
+        if (string.IsNullOrEmpty(this.referenceValue) && checkboxvalue is false)
         {
             AlertService.Error("Reference is required!", keepAfterRouteChange: true);
             loading = false;
