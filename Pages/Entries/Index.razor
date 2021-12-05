@@ -375,11 +375,17 @@
     private string ContactNumberValue = "";
     private string AddressValue = "";
     private string surnameValue = "";
+    private string _surnameValue = "";
     private string ucValue = "";
+    private string _ucValue = "";
     private string referenceValue = "";
+    private string _referenceValue = "";
     private string villageValue = "";
+    private string _villageValue = "";
     private string talukaValue = "";
+    private string _talukaValue = "";
     private string cityValue = "";
+    private string _cityValue = "";
     private IList<SearchValues> surnamesSearchList;
     private IList<SearchValues> ucsSearchList;
     private IList<SearchValues> villagesSearchList;
@@ -631,6 +637,12 @@
         this.NameValue = model.Name;
         this.ContactNumberValue = model.ContactNumber;
         this.AddressValue = model.Address;
+        this._surnameValue = this.surnameValue;
+        this._villageValue = this.villageValue;
+        this._referenceValue = this.referenceValue;
+        this._ucValue = this.ucValue;
+        this._talukaValue = this.talukaValue;
+        this._cityValue = this.cityValue;
 
         await GetData();
         await GetEntriesCount();
@@ -665,6 +677,12 @@
         this.NameValue = string.Empty;
         this.ContactNumberValue = string.Empty;
         this.AddressValue = string.Empty;
+        this._surnameValue = string.Empty;
+        this._villageValue = string.Empty;
+        this._referenceValue = string.Empty;
+        this._ucValue = string.Empty;
+        this._talukaValue = string.Empty;
+        this._cityValue = string.Empty;
 
         isOnSearch = false;
         loading = true;
@@ -677,7 +695,7 @@
 
     private async Task GetData()
     {
-        if (!string.IsNullOrEmpty(referenceValue))
+        if (!string.IsNullOrEmpty(referenceValue) || !string.IsNullOrEmpty(_referenceValue))
         {
             if (referencesSearchList == null)
             {
@@ -696,9 +714,11 @@
             }
         }
         else
+        {
             model.ReferenceId = null;
+        }
 
-        if (!string.IsNullOrEmpty(surnameValue))
+        if (!string.IsNullOrEmpty(surnameValue) || !string.IsNullOrEmpty(_surnameValue))
         {
             if (surnamesSearchList == null)
             {
@@ -717,13 +737,14 @@
             }
         }
         else
+        {
             model.SurnameId = null;
+        }
 
-        if (!string.IsNullOrEmpty(ucValue))
+        if (!string.IsNullOrEmpty(ucValue) || !string.IsNullOrEmpty(_ucValue))
         {
             if (ucsSearchList == null)
             {
-                //AlertService.Error("Incorrect Union Counsil Entered!");
             }
             foreach (var item in ucsSearchList)
             {
@@ -738,9 +759,11 @@
             }
         }
         else
+        {
             model.UnionCounsilId = null;
+        }
 
-        if (!string.IsNullOrEmpty(talukaValue))
+        if (!string.IsNullOrEmpty(talukaValue) || !string.IsNullOrEmpty(_talukaValue))
         {
             if (talukaSearchList == null)
             {
@@ -763,7 +786,7 @@
             model.TalukaId = null;
         }
 
-        if (!string.IsNullOrEmpty(cityValue))
+        if (!string.IsNullOrEmpty(cityValue) || !string.IsNullOrEmpty(_cityValue))
         {
             if (citySearchList == null)
             {
@@ -786,7 +809,7 @@
             model.VillageId = null;
         }
 
-        if (!string.IsNullOrEmpty(villageValue))
+        if (!string.IsNullOrEmpty(villageValue) || !string.IsNullOrEmpty(_villageValue))
         {
             if (villagesSearchList == null)
             {
@@ -814,31 +837,31 @@
             query = null;
             query = "voter/get?pageNumber=" + _page + "&perPage=" + pageSize + "&";
 
-            @if (!string.IsNullOrWhiteSpace(this.NameValue))
+            if (!string.IsNullOrWhiteSpace(this.NameValue))
                 query += "name=" + this.NameValue + "&";
-
-            @if (model.ReferenceId != null && model.ReferenceId > 0)
+       
+            if (model.ReferenceId != null && model.ReferenceId > 0)
                 query += "referenceId=" + model.ReferenceId + "&";
 
-            @if (!string.IsNullOrWhiteSpace(this.ContactNumberValue))
+            if (!string.IsNullOrWhiteSpace(this.ContactNumberValue))
                 query += "contactNumber=" + this.ContactNumberValue + "&";
 
-            @if (model.SurnameId != null && model.SurnameId > 0)
+            if (model.SurnameId != null && model.SurnameId > 0)
                 query += "surnameId=" + model.SurnameId + "&";
 
-            @if (model.VillageId != null && model.VillageId > 0)
+            if (model.VillageId != null && model.VillageId > 0)
                 query += "villageId=" + model.VillageId + "&";
 
-            @if (model.TalukaId != null && model.TalukaId > 0)
+            if (model.TalukaId != null && model.TalukaId > 0)
                 query += "TalukaId=" + model.TalukaId + "&";
 
-            @if (model.CityId != null && model.CityId > 0)
+            if (model.CityId != null && model.CityId > 0)
                 query += "CityId=" + model.CityId + "&";
 
-            @if (model.UnionCounsilId != null && model.UnionCounsilId > 0)
+            if (model.UnionCounsilId != null && model.UnionCounsilId > 0)
                 query += "unionCounsilId=" + model.UnionCounsilId + "&";
 
-            @if (!string.IsNullOrWhiteSpace(this.AddressValue))
+            if (!string.IsNullOrWhiteSpace(this.AddressValue))
                 query += "Address=" + this.AddressValue;
 
 

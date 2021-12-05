@@ -17,7 +17,7 @@
         </div><!-- /.row -->
     </div><!-- /.container-fluid -->
 </div>
-<!-- /.content-header -->
+
 <!-- Main content -->
 <section class="content">
     <div class="container-fluid">
@@ -97,7 +97,6 @@
         <!-- /.row -->
     </div><!-- /.container-fluid -->
 </section>
-<!-- /.content -->
 
 @code{
     private bool entriesLoading;
@@ -115,7 +114,6 @@
     }
     private async Task GetEntriesCount()
     {
-        //entriesLoading = true;
         try
         {
             using (System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient())
@@ -138,7 +136,6 @@
     }
     private async Task GetReferencesCount()
     {
-        //referencesLoading = true;
         try
         {
             using (System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient())
@@ -153,6 +150,7 @@
         }
         catch (Exception e)
         {
+            AlertService.Clear();
             AlertService.Error(e.Message);
             referencesLoading = false;
             StateHasChanged();
