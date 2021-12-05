@@ -396,21 +396,21 @@
         loading = false;
     }
 
-    public async void changeState()
-    {
-        try
-        {
-            loading = true;
-            await GetData();
-            await GetEntriesCount();
-            loading = false;
-            StateHasChanged();
-        }
-        catch(Exception e)
-        {
+    //public async void changeState()
+    //{
+    //    try
+    //    {
+    //        loading = true;
+    //        await GetData();
+    //        await GetEntriesCount();
+    //        loading = false;
+    //        //StateHasChanged();
+    //    }
+    //    catch(Exception e)
+    //    {
 
-        }
-    }
+    //    }
+    //}
 
     private async Task RenderToPage(string val)
     {

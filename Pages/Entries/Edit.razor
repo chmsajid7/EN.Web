@@ -667,21 +667,22 @@
                 loading = false;
                 StateHasChanged();
 
-                EN.Web.Pages.Entries.Index abc = new EN.Web.Pages.Entries.Index();
+                //EN.Web.Pages.Entries.Index abc = new EN.Web.Pages.Entries.Index();
 
+                //try
+                //{
+                //    abc.changeState();
+                //}
+                //catch(Exception e)
+                //{
+                    
+                //}
                 
 
                 await Task.Delay(3000);
                 await JSRuntime.InvokeVoidAsync($"window.close");
 
-                try
-                {
-                    abc.changeState();
-                }
-                catch(Exception e)
-                {
-                    
-                }
+                
             }
             else
             {
