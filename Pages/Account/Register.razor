@@ -47,18 +47,16 @@
     private async void OnValidSubmit()
     {
         // reset alerts on submit
-        AlertService.Clear();
-        
         loading = true;
         try
         {
             await AccountService.Register(model);
-            AlertService.Success("Registration successful", keepAfterRouteChange: true);
+            AlertService.Clear(); AlertService.Success("Registration successful", keepAfterRouteChange: true);
             NavigationManager.NavigateTo("account/login");
         }
         catch (Exception ex)
         {
-            AlertService.Error(ex.Message);
+            AlertService.Clear(); AlertService.Error(ex.Message);
             loading = false;
             StateHasChanged();
         }

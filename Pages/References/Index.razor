@@ -438,7 +438,7 @@
             }
             catch (Exception e)
             {
-                AlertService.Error(e.Message);
+                AlertService.Clear(); AlertService.Error(e.Message);
                 loading = false;
                 StateHasChanged();
             }
@@ -462,7 +462,7 @@
             }
             catch (Exception e)
             {
-                AlertService.Error(e.Message);
+                AlertService.Clear(); AlertService.Error(e.Message);
                 loading = false;
                 StateHasChanged();
             }
@@ -486,7 +486,7 @@
             }
             catch (Exception e)
             {
-                AlertService.Error(e.Message);
+                AlertService.Clear(); AlertService.Error(e.Message);
                 loading = false;
                 StateHasChanged();
             }
@@ -510,7 +510,7 @@
             }
             catch (Exception e)
             {
-                AlertService.Error(e.Message);
+                AlertService.Clear(); AlertService.Error(e.Message);
                 loading = false;
                 StateHasChanged();
             }
@@ -534,7 +534,7 @@
             }
             catch(Exception e)
             {
-                AlertService.Error(e.Message);
+                AlertService.Clear(); AlertService.Error(e.Message);
                 loading = false;
                 StateHasChanged();
             }
@@ -558,7 +558,7 @@
     //        }
     //        catch (Exception e)
     //        {
-    //            AlertService.Error(e.Message);
+    //            AlertService.Clear(); AlertService.Error(e.Message);
     //            loading = false;
     //            StateHasChanged();
     //        }
@@ -595,7 +595,7 @@
         //{
         //    if (referencesSearchList == null)
         //    {
-        //        //AlertService.Error("Incorrect Reference Entered!");
+        //        //AlertService.Clear(); AlertService.Error("Incorrect Reference Entered!");
         //    }
         //    foreach (var item in referencesSearchList)
         //    {
@@ -605,7 +605,7 @@
         //        }
         //        else
         //        {
-        //            //AlertService.Error("Incorrect Reference Entered!");
+        //            //AlertService.Clear(); AlertService.Error("Incorrect Reference Entered!");
         //        }
         //    }
         //}
@@ -616,7 +616,7 @@
         {
             if (surnamesSearchList == null)
             {
-                AlertService.Error("Incorrect Surname Entered!");
+                AlertService.Clear(); AlertService.Error("Incorrect Surname Entered!");
             }
             foreach (var item in surnamesSearchList)
             {
@@ -626,7 +626,7 @@
                 }
                 else
                 {
-                    //AlertService.Error("Incorrect Surname Entered!");
+                    AlertService.Clear(); AlertService.Error("Incorrect Surname Entered!");
                 }
             }
         }
@@ -637,7 +637,7 @@
         {
             if (ucsSearchList == null)
             {
-                //AlertService.Error("Incorrect Union Counsil Entered!");
+                AlertService.Clear(); AlertService.Error("Incorrect Union Counsil Entered!");
             }
             foreach (var item in ucsSearchList)
             {
@@ -647,7 +647,7 @@
                 }
                 else
                 {
-                    //AlertService.Error("Incorrect Union Counsil Entered!");
+                    AlertService.Clear(); AlertService.Error("Incorrect Union Counsil Entered!");
                 }
             }
         }
@@ -658,7 +658,7 @@
         {
             if (talukaSearchList == null)
             {
-                //AlertService.Error("Incorrect Village Name Entered!");
+                AlertService.Clear(); AlertService.Error("Incorrect Village Name Entered!");
             }
             foreach (var item in talukaSearchList)
             {
@@ -668,7 +668,7 @@
                 }
                 else
                 {
-                    //AlertService.Error("Incorrect Village Name Entered!");
+                    AlertService.Clear(); AlertService.Error("Incorrect Village Name Entered!");
                 }
             }
         }
@@ -681,7 +681,7 @@
         {
             if (citySearchList == null)
             {
-                //AlertService.Error("Incorrect Village Name Entered!");
+                AlertService.Clear(); AlertService.Error("Incorrect Village Name Entered!");
             }
             foreach (var item in citySearchList)
             {
@@ -691,7 +691,7 @@
                 }
                 else
                 {
-                    //AlertService.Error("Incorrect Village Name Entered!");
+                    AlertService.Clear(); AlertService.Error("Incorrect Village Name Entered!");
                 }
             }
         }
@@ -704,7 +704,7 @@
         {
             if (villagesSearchList == null)
             {
-                //AlertService.Error("Incorrect Village Name Entered!");
+                AlertService.Clear(); AlertService.Error("Incorrect Village Name Entered!");
             }
             foreach (var item in villagesSearchList)
             {
@@ -714,7 +714,7 @@
                 }
                 else
                 {
-                    //AlertService.Error("Incorrect Village Name Entered!");
+                    AlertService.Clear(); AlertService.Error("Incorrect Village Name Entered!");
                 }
             }
         }
@@ -767,7 +767,7 @@
         }
         catch(Exception e)
         {
-            AlertService.Error(e.Message);
+            AlertService.Clear(); AlertService.Error(e.Message);
             loading = false;
             StateHasChanged();
         }
@@ -818,7 +818,7 @@
         }
         catch(Exception e)
         {
-            AlertService.Error(e.Message);
+            AlertService.Clear(); AlertService.Error(e.Message);
             loading = false;
             StateHasChanged();
         }

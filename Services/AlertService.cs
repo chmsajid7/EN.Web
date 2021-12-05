@@ -32,6 +32,8 @@ namespace EN.Web.Services
 
         public void Error(string message, bool keepAfterRouteChange = false, bool autoClose = true)
         {
+            if (message == "TypeError: Failed to fetch") message = "Error: Internet Connection Failure!";
+
             this.Alert(new Alert
             {
                 Type = AlertType.Error,

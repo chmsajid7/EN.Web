@@ -364,7 +364,8 @@
         }
         catch(Exception)
         {
-            AlertService.Error("Reference Not Found!");
+            AlertService.Clear();
+            AlertService.Clear(); AlertService.Error("Reference Not Found!");
             loading = false;
             StateHasChanged();
         }
@@ -386,7 +387,8 @@
         }
         catch(Exception)
         {
-            AlertService.Error("Surname Not Found!");
+            AlertService.Clear();
+            AlertService.Clear(); AlertService.Error("Surname Not Found!");
             loading = false;
             StateHasChanged();
         }
@@ -408,7 +410,8 @@
         }
         catch(Exception)
         {
-            AlertService.Error("UnionCounsil Not Found!");
+            AlertService.Clear();
+            AlertService.Clear(); AlertService.Error("UnionCounsil Not Found!");
             loading = false;
             StateHasChanged();
         }
@@ -430,7 +433,8 @@
         }
         catch(Exception)
         {
-            AlertService.Error("Village Not Found!");
+            AlertService.Clear();
+            AlertService.Clear(); AlertService.Error("Village Not Found!");
             loading = false;
             StateHasChanged();
         }
@@ -452,7 +456,8 @@
         }
         catch(Exception)
         {
-            AlertService.Error("Taluka Not Found!");
+            AlertService.Clear();
+            AlertService.Clear(); AlertService.Error("Taluka Not Found!");
             loading = false;
             StateHasChanged();
         }
@@ -474,7 +479,8 @@
         }
         catch(Exception)
         {
-            AlertService.Error("Village Not Found!");
+            AlertService.Clear();
+            AlertService.Clear(); AlertService.Error("Village Not Found!");
             loading = false;
             StateHasChanged();
         }
@@ -501,7 +507,8 @@
             }
             catch(Exception e)
             {
-                AlertService.Error(e.Message);
+            AlertService.Clear();
+                AlertService.Clear(); AlertService.Error(e.Message);
                 loading = false;
                 StateHasChanged();
             }
@@ -524,7 +531,8 @@
             }
             catch(Exception e)
             {
-                AlertService.Error(e.Message);
+            AlertService.Clear();
+                AlertService.Clear(); AlertService.Error(e.Message);
                 loading = false;
                 StateHasChanged();
             }
@@ -547,7 +555,8 @@
             }
             catch(Exception e)
             {
-                AlertService.Error(e.Message);
+                AlertService.Clear();
+                AlertService.Clear(); AlertService.Error(e.Message);
                 loading = false;
                 StateHasChanged();
             }
@@ -570,7 +579,8 @@
             }
             catch(Exception e)
             {
-                AlertService.Error(e.Message);
+                AlertService.Clear();
+                AlertService.Clear(); AlertService.Error(e.Message);
                 loading = false;
                 StateHasChanged();
             }
@@ -593,7 +603,8 @@
             }
             catch(Exception e)
             {
-                AlertService.Error(e.Message);
+                AlertService.Clear();
+                AlertService.Clear(); AlertService.Error(e.Message);
                 loading = false;
                 StateHasChanged();
             }
@@ -616,7 +627,8 @@
             }
             catch (Exception e)
             {
-                AlertService.Error(e.Message);
+                AlertService.Clear();
+                AlertService.Clear(); AlertService.Error(e.Message);
                 loading = false;
                 StateHasChanged();
             }
@@ -639,7 +651,8 @@
         }
         catch(Exception e)
         {
-            AlertService.Error(e.Message);
+                AlertService.Clear();
+            AlertService.Clear(); AlertService.Error(e.Message);
             loading = false;
             StateHasChanged();
         }
@@ -648,12 +661,12 @@
 
     private async void OnValidSubmit()
     {
-        AlertService.Clear();
         loading = true;
 
         if (string.IsNullOrEmpty(this.referenceValue) && checkboxvalue is false)
         {
-            AlertService.Error("Reference is required!", keepAfterRouteChange: true);
+                AlertService.Clear();
+            AlertService.Clear(); AlertService.Error("Reference is required!", keepAfterRouteChange: true);
             loading = false;
             StateHasChanged();
             return;
@@ -663,6 +676,7 @@
         {
             if (await AddEntryAsync())
             {
+                AlertService.Clear();
                 AlertService.Success("Entry Edited Successfully", keepAfterRouteChange: true);
                 loading = false;
                 StateHasChanged();
@@ -692,7 +706,8 @@
         }
         catch (Exception ex)
         {
-            AlertService.Error(ex.Message);
+                AlertService.Clear();
+            AlertService.Clear(); AlertService.Error(ex.Message);
             loading = false;
             StateHasChanged();
         }
@@ -732,11 +747,12 @@
                 if(item.Value == referenceValue)
                 {
                     model.ReferenceId = item.Id;
+                    continue;
                 }
             }
             if(model.ReferenceId==null)
             {
-                AlertService.Error("Incorrect Reference Entered!");
+                AlertService.Clear(); AlertService.Error("Incorrect Reference Entered!");
                 return false;
             }
         }
@@ -752,19 +768,19 @@
                         {
                             if(item.Value == referenceValue)
                             {
-                                model.ReferenceId = item.Id;
+                                model.ReferenceId = item.Id; continue;
                             }
                         }
                         if(model.ReferenceId==null)
                         {
-                            AlertService.Error("Incorrect Reference Entered!");
+                            AlertService.Clear(); AlertService.Error("Incorrect Reference Entered!");
                             return false;
                         }
                     }
                 }
                 catch (Exception)
                 {
-                    AlertService.Error("Incorrect Reference Entered!");
+                    AlertService.Clear(); AlertService.Error("Incorrect Reference Entered!");
                     return false;
                 }
             }
@@ -776,12 +792,12 @@
             {
                 if(item.Value == surnameValue)
                 {
-                    model.SurnameId = item.Id;
+                    model.SurnameId = item.Id; continue;
                 }
             }
             if(model.SurnameId==null)
             {
-                AlertService.Error("Incorrect Surname Entered!");
+                AlertService.Clear(); AlertService.Error("Incorrect Surname Entered!");
                 return false;
             }
         }
@@ -797,19 +813,19 @@
                         {
                             if(item.Value == surnameValue)
                             {
-                                model.SurnameId = item.Id;
+                                model.SurnameId = item.Id; continue;
                             }
                         }
                         if(model.SurnameId==null)
                         {
-                            AlertService.Error("Incorrect Surname Entered!");
+                            AlertService.Clear(); AlertService.Error("Incorrect Surname Entered!");
                             return false;
                         }
                     }
                 }
                 catch (Exception)
                 {
-                    AlertService.Error("Incorrect Surname Entered!");
+                    AlertService.Clear(); AlertService.Error("Incorrect Surname Entered!");
                     return false;
                 }
             }
@@ -821,12 +837,12 @@
             {
                 if(item.Value == ucValue)
                 {
-                    model.UnionCounsilId = item.Id;
+                    model.UnionCounsilId = item.Id; continue;
                 }
             }
             if(model.UnionCounsilId==null)
             {
-                AlertService.Error("Incorrect UC Entered!");
+                AlertService.Clear(); AlertService.Error("Incorrect UC Entered!");
                 return false;
             }
         }
@@ -842,19 +858,19 @@
                         {
                             if(item.Value == ucValue)
                             {
-                                model.UnionCounsilId = item.Id;
+                                model.UnionCounsilId = item.Id; continue;
                             }
                         }
                         if(model.UnionCounsilId == null)
                         {
-                            AlertService.Error("Incorrect Union Counsil Entered!");
+                            AlertService.Clear(); AlertService.Error("Incorrect Union Counsil Entered!");
                             return false;
                         }
                     }
                 }
                 catch (Exception)
                 {
-                    AlertService.Error("Incorrect Union Counsil Entered!");
+                    AlertService.Clear(); AlertService.Error("Incorrect Union Counsil Entered!");
                     return false;
                 }
             }
@@ -866,12 +882,12 @@
             {
                 if (item.Value == villageValue)
                 {
-                    model.VillageId = item.Id;
+                    model.VillageId = item.Id; continue;
                 }
             }
             if(model.VillageId==null)
             {
-                AlertService.Error("Incorrect Village Entered!");
+                AlertService.Clear(); AlertService.Error("Incorrect Village Entered!");
                 return false;
             }
         }
@@ -887,19 +903,19 @@
                         {
                             if (item.Value == villageValue)
                             {
-                                model.VillageId = item.Id;
+                                model.VillageId = item.Id; continue;
                             }
                         }
                         if(model.VillageId == null)
                         {
-                            AlertService.Error("Incorrect Village Entered!");
+                            AlertService.Clear(); AlertService.Error("Incorrect Village Entered!");
                             return false;
                         }
                     }
                 }
                 catch (Exception)
                 {
-                    AlertService.Error("Incorrect Village Name Entered!");
+                    AlertService.Clear(); AlertService.Error("Incorrect Village Name Entered!");
                     return false;
                 }
             }
@@ -911,12 +927,12 @@
             {
                 if (item.Value == cityValue)
                 {
-                    model.CityId = item.Id;
+                    model.CityId = item.Id; continue;
                 }
             }
             if(model.CityId==null)
             {
-                AlertService.Error("Incorrect City Entered!");
+                AlertService.Clear(); AlertService.Error("Incorrect City Entered!");
                 return false;
             }
         }
@@ -932,19 +948,19 @@
                         {
                             if (item.Value == cityValue)
                             {
-                                model.CityId = item.Id;
+                                model.CityId = item.Id; continue;
                             }
                         }
                         if(model.CityId == null)
                         {
-                            AlertService.Error("Incorrect City Entered!");
+                            AlertService.Clear(); AlertService.Error("Incorrect City Entered!");
                             return false;
                         }
                     }
                 }
                 catch (Exception)
                 {
-                    AlertService.Error("Incorrect City Entered!");
+                    AlertService.Clear(); AlertService.Error("Incorrect City Entered!");
                     return false;
                 }
             }
@@ -956,12 +972,12 @@
             {
                 if (item.Value == talukaValue)
                 {
-                    model.TalukaId = item.Id;
+                    model.TalukaId = item.Id; continue;
                 }
             }
             if(model.TalukaId==null)
             {
-                AlertService.Error("Incorrect Taluka Entered!");
+                AlertService.Clear(); AlertService.Error("Incorrect Taluka Entered!");
                 return false;
             }
         }
@@ -977,19 +993,19 @@
                         {
                             if (item.Value == talukaValue)
                             {
-                                model.TalukaId = item.Id;
+                                model.TalukaId = item.Id; continue;
                             }
                         }
                         if(model.TalukaId == null)
                         {
-                            AlertService.Error("Incorrect Taluka Entered!");
+                            AlertService.Clear(); AlertService.Error("Incorrect Taluka Entered!");
                             return false;
                         }
                     }
                 }
                 catch (Exception)
                 {
-                    AlertService.Error("Incorrect Taluka Entered!");
+                    AlertService.Clear(); AlertService.Error("Incorrect Taluka Entered!");
                     return false;
                 }
             }
@@ -1016,12 +1032,12 @@
                 }
                 if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
                 {
-                    AlertService.Error("Entry Already Exists!");
+                    AlertService.Clear(); AlertService.Error("Entry Already Exists!");
                     return false;
                 }
             }
         }
-        AlertService.Error("Sorry, An Unknown Error Has Occured!");
+        AlertService.Clear(); AlertService.Error("Sorry, An Unknown Error Has Occured!");
         return false;
     }
 }

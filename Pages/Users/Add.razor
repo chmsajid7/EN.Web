@@ -58,7 +58,7 @@
         }
         catch (Exception ex)
         {
-            AlertService.Error(ex.Message);
+            AlertService.Clear(); AlertService.Error(ex.Message);
             loading = false;
             StateHasChanged();
         }

@@ -469,7 +469,7 @@
             }
             catch (Exception e)
             {
-                AlertService.Error(e.Message);
+                AlertService.Clear(); AlertService.Error(e.Message);
                 loading = false;
                 StateHasChanged();
             }
@@ -493,7 +493,7 @@
             }
             catch (Exception e)
             {
-                AlertService.Error(e.Message);
+                AlertService.Clear(); AlertService.Error(e.Message);
                 loading = false;
                 StateHasChanged();
             }
@@ -517,7 +517,7 @@
             }
             catch (Exception e)
             {
-                AlertService.Error(e.Message);
+                AlertService.Clear(); AlertService.Error(e.Message);
                 loading = false;
                 StateHasChanged();
             }
@@ -541,7 +541,7 @@
             }
             catch (Exception e)
             {
-                AlertService.Error(e.Message);
+                AlertService.Clear(); AlertService.Error(e.Message);
                 loading = false;
                 StateHasChanged();
             }
@@ -565,7 +565,7 @@
             }
             catch(Exception e)
             {
-                AlertService.Error(e.Message);
+                AlertService.Clear(); AlertService.Error(e.Message);
                 loading = false;
                 StateHasChanged();
             }
@@ -589,7 +589,7 @@
             }
             catch (Exception e)
             {
-                AlertService.Error(e.Message);
+                AlertService.Clear(); AlertService.Error(e.Message);
                 loading = false;
                 StateHasChanged();
             }
@@ -665,6 +665,18 @@
     private async Task ClearSearch()
     {
         this.totalPages = 0;
+
+        ClearThings();
+
+        loading = true;
+        await GetData();
+        await GetEntriesCount();
+        loading = false;
+        StateHasChanged();
+    }
+
+    private void ClearThings()
+    {
         model.Name = "";
         model.ReferenceId = null;
         model.ContactNumber = null;
@@ -674,23 +686,19 @@
         model.Address = null;
         model.TalukaId = null;
         model.CityId = null;
-        this.NameValue = string.Empty;
-        this.ContactNumberValue = string.Empty;
-        this.AddressValue = string.Empty;
-        this._surnameValue = string.Empty;
-        this._villageValue = string.Empty;
-        this._referenceValue = string.Empty;
-        this._ucValue = string.Empty;
-        this._talukaValue = string.Empty;
-        this._cityValue = string.Empty;
+        this.NameValue = null;
+        this.ContactNumberValue = null;
+        this.AddressValue = null;
+        this._surnameValue = null;
+        this._villageValue = null;
+        this._referenceValue = null;
+        this._ucValue = null;
+        this._talukaValue = null;
+        this._cityValue = null;
+
+        _page = 1;
 
         isOnSearch = false;
-        loading = true;
-        _page = 1;
-        await GetData();
-        await GetEntriesCount();
-        loading = false;
-        StateHasChanged();
     }
 
     private async Task GetData()
@@ -699,17 +707,27 @@
         {
             if (referencesSearchList == null)
             {
-                //AlertService.Error("Incorrect Reference Entered!");
+                AlertService.Clear(); AlertService.Error("Incorrect Reference Entered!");
+                _referenceValue = null;
             }
-            foreach (var item in referencesSearchList)
+            else
             {
-                if (item.Value == referenceValue)
+                foreach (var item in referencesSearchList)
                 {
-                    model.ReferenceId = item.Id;
-                }
-                else
-                {
-                    //AlertService.Error("Incorrect Reference Entered!");
+                    if (item.Value == referenceValue)
+                    {
+                        model.ReferenceId = item.Id;
+                        continue;
+                    }
+                    else if (item.Value == _referenceValue)
+                    {
+                        model.ReferenceId = item.Id;
+                        continue;
+                    }
+                    else
+                    {
+                        AlertService.Clear(); AlertService.Error("Incorrect Reference Entered!");
+                    }
                 }
             }
         }
@@ -722,17 +740,27 @@
         {
             if (surnamesSearchList == null)
             {
-                AlertService.Error("Incorrect Surname Entered!");
+                AlertService.Clear(); AlertService.Error("Incorrect Surname Entered!");
+                _surnameValue = null;
             }
-            foreach (var item in surnamesSearchList)
+            else
             {
-                if (item.Value == surnameValue)
+                foreach (var item in surnamesSearchList)
                 {
-                    model.SurnameId = item.Id;
-                }
-                else
-                {
-                    //AlertService.Error("Incorrect Surname Entered!");
+                    if (item.Value == surnameValue)
+                    {
+                        model.SurnameId = item.Id;
+                        continue;
+                    }
+                    else if (item.Value == _surnameValue)
+                    {
+                        model.SurnameId = item.Id;
+                        continue;
+                    }
+                    else
+                    {
+                        AlertService.Clear(); AlertService.Error("Incorrect Surname Entered!");
+                    }
                 }
             }
         }
@@ -745,16 +773,26 @@
         {
             if (ucsSearchList == null)
             {
-            }
-            foreach (var item in ucsSearchList)
+                AlertService.Clear(); AlertService.Error("Incorrect Union Counsil Entered!");
+                _ucValue = null;
+            }else
             {
-                if (item.Value == ucValue)
+                foreach (var item in ucsSearchList)
                 {
-                    model.UnionCounsilId = item.Id;
-                }
-                else
-                {
-                    //AlertService.Error("Incorrect Union Counsil Entered!");
+                    if (item.Value == ucValue)
+                    {
+                        model.UnionCounsilId = item.Id;
+                        continue;
+                    }
+                    else if (item.Value == _ucValue)
+                    {
+                        model.UnionCounsilId = item.Id;
+                        continue;
+                    }
+                    else
+                    {
+                        AlertService.Clear(); AlertService.Error("Incorrect Union Counsil Entered!");
+                    }
                 }
             }
         }
@@ -767,17 +805,27 @@
         {
             if (talukaSearchList == null)
             {
-                //AlertService.Error("Incorrect Village Name Entered!");
+                AlertService.Clear(); AlertService.Error("Incorrect Village Name Entered!");
+                _talukaValue = null;
             }
-            foreach (var item in talukaSearchList)
+            else
             {
-                if (item.Value == talukaValue)
+                foreach (var item in talukaSearchList)
                 {
-                    model.TalukaId = item.Id;
-                }
-                else
-                {
-                    //AlertService.Error("Incorrect Village Name Entered!");
+                    if (item.Value == talukaValue)
+                    {
+                        model.TalukaId = item.Id;
+                        continue;
+                    }
+                    else if (item.Value == _talukaValue)
+                    {
+                        model.TalukaId = item.Id;
+                        continue;
+                    }
+                    else
+                    {
+                        AlertService.Clear(); AlertService.Error("Incorrect Village Name Entered!");
+                    }
                 }
             }
         }
@@ -790,17 +838,27 @@
         {
             if (citySearchList == null)
             {
-                //AlertService.Error("Incorrect Village Name Entered!");
+                AlertService.Clear(); AlertService.Error("Incorrect Village Name Entered!");
+                _cityValue = null;
             }
-            foreach (var item in citySearchList)
+            else
             {
-                if (item.Value == cityValue)
+                foreach (var item in citySearchList)
                 {
-                    model.CityId = item.Id;
-                }
-                else
-                {
-                    //AlertService.Error("Incorrect Village Name Entered!");
+                    if (item.Value == cityValue)
+                    {
+                        model.CityId = item.Id;
+                        continue;
+                    }
+                    else if (item.Value == _cityValue)
+                    {
+                        model.CityId = item.Id;
+                        continue;
+                    }
+                    else
+                    {
+                        AlertService.Clear(); AlertService.Error("Incorrect Village Name Entered!");
+                    }
                 }
             }
         }
@@ -813,17 +871,27 @@
         {
             if (villagesSearchList == null)
             {
-                //AlertService.Error("Incorrect Village Name Entered!");
+                AlertService.Clear(); AlertService.Error("Incorrect Village Name Entered!");
+                _villageValue = null;
             }
-            foreach (var item in villagesSearchList)
+            else
             {
-                if (item.Value == villageValue)
+                foreach (var item in villagesSearchList)
                 {
-                    model.VillageId = item.Id;
-                }
-                else
-                {
-                    //AlertService.Error("Incorrect Village Name Entered!");
+                    if (item.Value == villageValue)
+                    {
+                        model.VillageId = item.Id;
+                        continue;
+                    }
+                    else if (item.Value == _villageValue)
+                    {
+                        model.VillageId = item.Id;
+                        continue;
+                    }
+                    else
+                    {
+                        AlertService.Clear(); AlertService.Error("Incorrect Village Name Entered!");
+                    }
                 }
             }
         }
@@ -839,7 +907,7 @@
 
             if (!string.IsNullOrWhiteSpace(this.NameValue))
                 query += "name=" + this.NameValue + "&";
-       
+
             if (model.ReferenceId != null && model.ReferenceId > 0)
                 query += "referenceId=" + model.ReferenceId + "&";
 
@@ -864,6 +932,13 @@
             if (!string.IsNullOrWhiteSpace(this.AddressValue))
                 query += "Address=" + this.AddressValue;
 
+            //if (string.IsNullOrWhiteSpace(this.NameValue) && string.IsNullOrWhiteSpace(this.ContactNumberValue) && string.IsNullOrWhiteSpace(this.AddressValue) &&
+            //    model.ReferenceId == null && model.SurnameId == null && model.VillageId == null && 
+            //    model.TalukaId == null && model.CityId == null && model.UnionCounsilId == null)
+            //{
+            //    ClearThings();
+            //}
+
 
             using (System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient())
             {
@@ -876,7 +951,7 @@
         }
         catch (Exception e)
         {
-            AlertService.Error(e.Message);
+            AlertService.Clear(); AlertService.Error(e.Message);
             loading = false;
             StateHasChanged();
         }
@@ -928,7 +1003,7 @@
         }
         catch (Exception e)
         {
-            AlertService.Error(e.Message);
+            AlertService.Clear(); AlertService.Error(e.Message);
             loading = false;
             StateHasChanged();
         }
@@ -959,7 +1034,7 @@
         }
         catch (Exception e)
         {
-            AlertService.Error("Not able to delete, Error : " + e.Message);
+            AlertService.Clear(); AlertService.Error("Not able to delete, Error : " + e.Message);
             loading = false;
             StateHasChanged();
         }
@@ -990,7 +1065,7 @@
         }
         catch (Exception ex)
         {
-            AlertService.Error(ex.Message);
+            AlertService.Clear(); AlertService.Error(ex.Message);
             loading = false;
             StateHasChanged();
         }
@@ -1003,7 +1078,7 @@
         {
             if (referencesSearchList == null)
             {
-                AlertService.Error("Incorrect Reference Entered!");
+                AlertService.Clear(); AlertService.Error("Incorrect Reference Entered!");
                 return false;
             }
             foreach (var item in referencesSearchList)
@@ -1014,7 +1089,7 @@
                 }
                 else
                 {
-                    AlertService.Error("Incorrect Reference Entered!");
+                    AlertService.Clear(); AlertService.Error("Incorrect Reference Entered!");
                     return false;
                 }
             }
@@ -1023,7 +1098,7 @@
         {
             if (surnamesSearchList == null)
             {
-                AlertService.Error("Incorrect Surname Entered!");
+                AlertService.Clear(); AlertService.Error("Incorrect Surname Entered!");
                 return false;
             }
             foreach (var item in surnamesSearchList)
@@ -1034,7 +1109,7 @@
                 }
                 else
                 {
-                    AlertService.Error("Incorrect Surname Entered!");
+                    AlertService.Clear(); AlertService.Error("Incorrect Surname Entered!");
                     return false;
                 }
             }
@@ -1043,7 +1118,7 @@
         {
             if (ucsSearchList == null)
             {
-                AlertService.Error("Incorrect Union Counsil Entered!");
+                AlertService.Clear(); AlertService.Error("Incorrect Union Counsil Entered!");
                 return false;
             }
             foreach (var item in ucsSearchList)
@@ -1054,7 +1129,7 @@
                 }
                 else
                 {
-                    AlertService.Error("Incorrect Union Counsil Entered!");
+                    AlertService.Clear(); AlertService.Error("Incorrect Union Counsil Entered!");
                     return false;
                 }
             }
@@ -1063,7 +1138,7 @@
         {
             if (villagesSearchList == null)
             {
-                AlertService.Error("Incorrect Village Name Entered!");
+                AlertService.Clear(); AlertService.Error("Incorrect Village Name Entered!");
                 return false;
             }
             foreach (var item in villagesSearchList)
@@ -1074,7 +1149,7 @@
                 }
                 else
                 {
-                    AlertService.Error("Incorrect Village Name Entered!");
+                    AlertService.Clear(); AlertService.Error("Incorrect Village Name Entered!");
                     return false;
                 }
             }

@@ -73,15 +73,14 @@
             else
             {
                 AlertService.Clear();
-                AlertService.Error("Username or password is incorrect");
+                AlertService.Clear(); AlertService.Error("Username or password is incorrect");
                 loading = false;
                 StateHasChanged();
             }
         }
         catch (Exception ex)
         {
-            AlertService.Clear();
-            AlertService.Error(ex.Message);
+            AlertService.Clear(); AlertService.Error(ex.Message);
             loading = false;
             StateHasChanged();
         }
