@@ -876,19 +876,5 @@
     {
         string url = "https://entrynowapi.azurewebsites.net/api/reference/downloadEntriesByReference/" + id;
         await JSRuntime.InvokeAsync<object>("open", url, "_blank"); 
-
-        //byte[] bytes = null ;
-        //using (System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient())
-        //    {
-        //        using (System.Net.Http.HttpResponseMessage response = await httpClient.GetAsync(url))
-        //        {
-        //            if (response.IsSuccessStatusCode)
-        //            {
-        //                    bytes = await response.Content.ReadAsByteArrayAsync();
-        //            }
-        //        }
-        //    }
-        //    return await _blazorDownloadFileService.DownloadFile("filename.xlsx", bytes,
-        //                        contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
     }
 }
