@@ -27,156 +27,171 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Reports View</h3>
+                        <h3 class="card-title">Reporting View</h3>
                     </div>
                     <!-- ./card-header -->
                     <div class="card-body p-0">
                         <table class="table table-hover">
                             <tbody>
-                                <tr data-widget="expandable-table" aria-expanded="true">
-                                    <td class="border-0">
-                                        <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
-                                        Taluka-1
-                                    </td>
-                                </tr>
-                                <tr class="expandable-body">
-                                    <td>
-                                        <div class="p-0">
-                                            <table class="table table-hover">
-                                                <tbody>
-                                                    <tr data-widget="expandable-table" aria-expanded="false">
-                                                        <td>
-                                                            <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
-                                                            219-1
-                                                        </td>
-                                                    </tr>
-                                                    <tr class="expandable-body">
-                                                        <td>
-                                                            <div class="p-0">
-                                                                <table class="table table-hover">
-                                                                    <tbody>
-                                                                        <tr>
-                                                                            <td>219-1-1</td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td>219-1-2</td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td>219-1-3</td>
-                                                                        </tr>
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr data-widget="expandable-table" aria-expanded="false">
-                                                        <td>
-                                                            <button type="button" class="btn btn-primary p-0">
-                                                                <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
-                                                            </button>
-                                                            219-2
-                                                        </td>
-                                                    </tr>
-                                                    <tr class="expandable-body">
-                                                        <td>
-                                                            <div class="p-0">
-                                                                <table class="table table-hover">
-                                                                    <tbody>
-                                                                        <tr>
-                                                                            <td>219-2-1</td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td>219-2-2</td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td>219-2-3</td>
-                                                                        </tr>
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>219-3</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                            <tbody>
-                                <tr data-widget="expandable-table" aria-expanded="false">
-                                    <td class="border-0">
-                                        <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
-                                        Taluka-2
-                                    </td>
-                                </tr>
-                                <tr class="expandable-body">
-                                    <td>
-                                        <div class="p-0">
-                                            <table class="table table-hover">
-                                                <tbody>
-                                                    <tr data-widget="expandable-table" aria-expanded="false">
-                                                        <td>
-                                                            <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
-                                                            Union Counsils
-                                                        </td>
-                                                    </tr>
-                                                    <tr class="expandable-body">
-                                                        <td>
-                                                            <div class="p-0">
-                                                                <table class="table table-hover">
-                                                                    <tbody>
-                                                                        <tr>
-                                                                            <td>219-1-1</td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td>219-1-2</td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td>219-1-3</td>
-                                                                        </tr>
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr data-widget="expandable-table" aria-expanded="false">
-                                                        <td>
-                                                            <button type="button" class="btn btn-primary p-0">
-                                                                <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
-                                                            </button>
-                                                            219-2
-                                                        </td>
-                                                    </tr>
-                                                    <tr class="expandable-body">
-                                                        <td>
-                                                            <div class="p-0">
-                                                                <table class="table table-hover">
-                                                                    <tbody>
-                                                                        <tr>
-                                                                            <td>219-2-1</td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td>219-2-2</td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td>219-2-3</td>
-                                                                        </tr>
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>219-3</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </td>
-                                </tr>
+                                @if (loading)
+                                {
+                                    <tr>
+                                        <td colspan="12" class="text-center">
+                                            <span class="spinner-border spinner-border-lg align-center"></span>
+                                        </td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    foreach (var item in this.reports.ListReports)
+                                    {
+                                        <tr data-widget="expandable-table" aria-expanded="true">
+                                            <td>
+                                                <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
+                                                @item.Taluka
+                                            </td>
+                                        </tr>
+                                        <tr class="expandable-body">
+                                            <td>
+                                                <div class="p-0">
+                                                    <table class="table table-hover">
+                                                        <tbody>
+                                                            @if (item.UnionCounsils.Count > 0)
+                                                            {
+                                                                <tr data-widget="expandable-table" aria-expanded="true">
+                                                                    <td>
+                                                                        <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
+                                                                        Union Counsils
+                                                                    </td>
+                                                                </tr>
+                                                                <tr class="expandable-body">
+                                                                    <td>
+                                                                        <div class="p-0">
+                                                                            <table class="table table-hover">
+                                                                                <tbody>
+                                                                                    @foreach (var ucs in item.UnionCounsils)
+                                                                                    {
+                                                                                        <tr data-widget="expandable-table" aria-expanded="true">
+                                                                                            <td>
+                                                                                                <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
+                                                                                                @ucs.UnionCounsilUnionCounsil
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        <tr class="expandable-body">
+                                                                                            <td>
+                                                                                                <div class="p-0">
+                                                                                                    <table class="table table-hover">
+                                                                                                        <tbody>
+                                                                                                            @foreach (var entry in ucs.Entries)
+                                                                                                            {
+                                                                                                                <tr data-widget="expandable-table" aria-expanded="true">
+                                                                                                                    <td>
+                                                                                                                        <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
+                                                                                                                        @entry.Name
+                                                                                                                    </td>
+                                                                                                                </tr>
+                                                                                                                <tr class="expandable-body">
+                                                                                                                    <td>
+                                                                                                                        <div class="p-0">
+                                                                                                                            <table class="table table-hover">
+                                                                                                                                <tbody>
+                                                                                                                                    <tr>
+                                                                                                                                        <td>@entry.ContactNumber</td>
+                                                                                                                                    </tr>
+                                                                                                                                    <tr>
+                                                                                                                                        <td>@entry.Reference</td>
+                                                                                                                                    </tr>
+                                                                                                                                </tbody>
+                                                                                                                            </table>
+                                                                                                                        </div>
+                                                                                                                    </td>
+                                                                                                                </tr>
+                                                                                                            }
+                                                                                                        </tbody>
+                                                                                                    </table>
+                                                                                                </div>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    }
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                            @*@if (item.Villages.Count > 0)
+                                                            {
+                                                                <tr data-widget="expandable-table" aria-expanded="true">
+                                                                    <td>
+                                                                        <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
+                                                                        Villages
+                                                                    </td>
+                                                                </tr>
+                                                                <tr class="expandable-body">
+                                                                    <td>
+                                                                        <div class="p-0">
+                                                                            <table class="table table-hover">
+                                                                                <tbody>
+                                                                                    @foreach (var village in item.Villages)
+                                                                                    {
+                                                                                        <tr data-widget="expandable-table" aria-expanded="true">
+                                                                                            <td>
+                                                                                                <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
+                                                                                                @village.Village
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        <tr class="expandable-body">
+                                                                                            <td>
+                                                                                                <div class="p-0">
+                                                                                                    <table class="table table-hover">
+                                                                                                        <tbody>
+                                                                                                            @if (village.Entries == null) continue;
+                                                                                                            @foreach (var entry in village.Entries)
+                                                                                                            {
+
+
+                                                                                                                <tr data-widget="expandable-table" aria-expanded="true">
+                                                                                                                    <td>
+                                                                                                                        <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
+                                                                                                                        @entry.Name
+                                                                                                                    </td>
+                                                                                                                </tr>
+                                                                                                                <tr class="expandable-body">
+                                                                                                                    <td>
+                                                                                                                        <div class="p-0">
+                                                                                                                            <table class="table table-hover">
+                                                                                                                                <tbody>
+                                                                                                                                    <tr>
+                                                                                                                                        <td>@entry.ContactNumber</td>
+                                                                                                                                    </tr>
+                                                                                                                                    <tr>
+                                                                                                                                        <td>@entry.Reference</td>
+                                                                                                                                    </tr>
+                                                                                                                                </tbody>
+                                                                                                                            </table>
+                                                                                                                        </div>
+                                                                                                                    </td>
+                                                                                                                </tr>
+                                                                                                            }
+                                                                                                        </tbody>
+                                                                                                    </table>
+                                                                                                </div>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    }
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            }*@
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
                             </tbody>
                         </table>
                     </div>
@@ -186,12 +201,39 @@
             </div>
         </div>
         <!-- /.row -->
-
     </div><!-- /.container-fluid -->
 </section>
 
-
-
-
 @code {
+    private bool loading;
+    private string baseUrl = "https://entrynowapi.azurewebsites.net/api/";
+    private Reports reports = new Reports();
+    private List<string> talukas = new List<string>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        loading = true;
+        await GetData();
+        loading = false;
+    }
+    private async Task GetData()
+    {
+        try
+        {
+            using (System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient())
+            {
+                using (System.Net.Http.HttpResponseMessage response = await httpClient.GetAsync(baseUrl + "reports"))
+                {
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    reports = Newtonsoft.Json.JsonConvert.DeserializeObject<Reports>(apiResponse);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            AlertService.Clear(); AlertService.Error(e.Message);
+            loading = false;
+            StateHasChanged();
+        }
+    }
 }
