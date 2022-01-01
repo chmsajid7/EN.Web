@@ -81,7 +81,24 @@
                                                                                             <td>
                                                                                                 <div class="p-0">
                                                                                                     <table class="table table-hover">
+                                                                                                        <thead>
+                                                                                                            <tr>
+                                                                                                                <th>Name</th>
+                                                                                                                <th>Contact</th>
+                                                                                                                <th>Reference</th>
+                                                                                                            </tr>
+                                                                                                        </thead>
                                                                                                         <tbody>
+                                                                                                            @foreach (var entry in ucs.Entries)
+                                                                                                            {
+                                                                                                                <tr>
+                                                                                                                    <td>@entry.Name</td>
+                                                                                                                    <td>@entry.ContactNumber</td>
+                                                                                                                    <td>@entry.Reference</td>
+                                                                                                                </tr>
+                                                                                                            }
+                                                                                                        </tbody>
+                                                                                                        @*<tbody>
                                                                                                             @foreach (var entry in ucs.Entries)
                                                                                                             {
                                                                                                                 <tr data-widget="expandable-table" aria-expanded="true">
@@ -107,7 +124,7 @@
                                                                                                                     </td>
                                                                                                                 </tr>
                                                                                                             }
-                                                                                                        </tbody>
+                                                                                                        </tbody>*@
                                                                                                     </table>
                                                                                                 </div>
                                                                                             </td>
@@ -119,7 +136,7 @@
                                                                     </td>
                                                                 </tr>
                                                             }
-                                                            @*@if (item.Villages.Count > 0)
+                                                            @if (item.Villages.Count > 0)
                                                             {
                                                                 <tr data-widget="expandable-table" aria-expanded="true">
                                                                     <td>
@@ -145,18 +162,17 @@
                                                                                                 <div class="p-0">
                                                                                                     <table class="table table-hover">
                                                                                                         <tbody>
-                                                                                                            @if (village.Entries == null) continue;
-                                                                                                            @foreach (var entry in village.Entries)
+                                                                                                            @if (village.Count > 0)
                                                                                                             {
-
-
-                                                                                                                <tr data-widget="expandable-table" aria-expanded="true">
-                                                                                                                    <td>
-                                                                                                                        <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
-                                                                                                                        @entry.Name
-                                                                                                                    </td>
-                                                                                                                </tr>
-                                                                                                                <tr class="expandable-body">
+                                                                                                                @foreach (var entry in village.Entries)
+                                                                                                                {
+                                                                                                                    <tr data-widget="expandable-table" aria-expanded="true">
+                                                                                                                        <td>
+                                                                                                                            <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
+                                                                                                                            @entry.Name
+                                                                                                                        </td>
+                                                                                                                    </tr>
+                                                                                                                    <tr class="expandable-body">
                                                                                                                     <td>
                                                                                                                         <div class="p-0">
                                                                                                                             <table class="table table-hover">
@@ -171,7 +187,8 @@
                                                                                                                             </table>
                                                                                                                         </div>
                                                                                                                     </td>
-                                                                                                                </tr>
+                                                                                                                    </tr>
+                                                                                                                }
                                                                                                             }
                                                                                                         </tbody>
                                                                                                     </table>
@@ -184,7 +201,7 @@
                                                                         </div>
                                                                     </td>
                                                                 </tr>
-                                                            }*@
+                                                            }
                                                         </tbody>
                                                     </table>
                                                 </div>
