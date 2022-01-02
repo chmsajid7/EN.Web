@@ -2,7 +2,11 @@
 @attribute [Authorize]
 @inject IAlertService AlertService
 @inject NavigationManager NavigationManager
+@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime;
+@inject NavigationManager NavigationManager
 
+<!-- Content Header (Page header) -->
 <section class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
@@ -12,7 +16,7 @@
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item active">Generate Reports</li>
+                    <li class="breadcrumb-item active">Reports</li>
                 </ol>
             </div>
         </div>
@@ -27,7 +31,8 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Reporting View</h3>
+                        <a style="float:left; color:grey;">Reporting View!</a>
+                        <a href="" @onclick="@(() => DownloadReport())" @onclick:preventDefault style="float:right; color:grey;"><i class="fas fa-download"></i></a>
                     </div>
                     <!-- ./card-header -->
                     <div class="card-body p-0">
@@ -45,7 +50,7 @@
                                 {
                                     foreach (var item in this.reports.ListReports)
                                     {
-                                        <tr data-widget="expandable-table" aria-expanded="true">
+                                        <tr data-widget="expandable-table" aria-expanded="false">
                                             <td>
                                                 <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
                                                 @item.Taluka
@@ -58,7 +63,7 @@
                                                         <tbody>
                                                             @if (item.UnionCounsils.Count > 0)
                                                             {
-                                                                <tr data-widget="expandable-table" aria-expanded="true">
+                                                                <tr data-widget="expandable-table" aria-expanded="false">
                                                                     <td>
                                                                         <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
                                                                         Union Counsils
@@ -71,7 +76,7 @@
                                                                                 <tbody>
                                                                                     @foreach (var ucs in item.UnionCounsils)
                                                                                     {
-                                                                                        <tr data-widget="expandable-table" aria-expanded="true">
+                                                                                        <tr data-widget="expandable-table" aria-expanded="false">
                                                                                             <td>
                                                                                                 <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
                                                                                                 @ucs.UnionCounsilUnionCounsil
@@ -98,6 +103,13 @@
                                                                                                                 </tr>
                                                                                                             }
                                                                                                         </tbody>
+                                                                                                        <tfoot>
+                                                                                                            <a href="" @onclick:preventDefault @onclick="@(() => GetAllEntries(item.Taluka, ucs.UnionCounsilUnionCounsil))"
+                                                                                                               style="float: left; color: #007bff;">
+                                                                                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                                                                View all Entries in @item.Taluka and @ucs.UnionCounsilUnionCounsil
+                                                                                                            </a>
+                                                                                                        </tfoot>
                                                                                                     </table>
                                                                                                 </div>
                                                                                             </td>
@@ -111,7 +123,7 @@
                                                             }
                                                             @if (item.Villages.Count > 0)
                                                             {
-                                                                <tr data-widget="expandable-table" aria-expanded="true">
+                                                                <tr data-widget="expandable-table" aria-expanded="false">
                                                                     <td>
                                                                         <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
                                                                         Villages
@@ -124,7 +136,7 @@
                                                                                 <tbody>
                                                                                     @foreach (var village in item.Villages)
                                                                                     {
-                                                                                        <tr data-widget="expandable-table" aria-expanded="true">
+                                                                                        <tr data-widget="expandable-table" aria-expanded="false">
                                                                                             <td>
                                                                                                 <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
                                                                                                 @village.Village
@@ -134,36 +146,32 @@
                                                                                             <td>
                                                                                                 <div class="p-0">
                                                                                                     <table class="table table-hover">
-                                                                                                        <tbody>
-                                                                                                            @if (village.Count > 0)
-                                                                                                            {
+                                                                                                        @if (village.Count > 0)
+                                                                                                        {
+                                                                                                            <thead>
+                                                                                                                <tr>
+                                                                                                                    <th>Name</th>
+                                                                                                                    <th>Contact</th>
+                                                                                                                    <th>Reference</th>
+                                                                                                                </tr>
+                                                                                                            </thead>
+                                                                                                            <tbody>
                                                                                                                 @foreach (var entry in village.Entries)
                                                                                                                 {
-                                                                                                                    <tr data-widget="expandable-table" aria-expanded="true">
-                                                                                                                        <td>
-                                                                                                                            <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
-                                                                                                                            @entry.Name
-                                                                                                                        </td>
-                                                                                                                    </tr>
-                                                                                                                    <tr class="expandable-body">
-                                                                                                                    <td>
-                                                                                                                        <div class="p-0">
-                                                                                                                            <table class="table table-hover">
-                                                                                                                                <tbody>
-                                                                                                                                    <tr>
-                                                                                                                                        <td>@entry.ContactNumber</td>
-                                                                                                                                    </tr>
-                                                                                                                                    <tr>
-                                                                                                                                        <td>@entry.Reference</td>
-                                                                                                                                    </tr>
-                                                                                                                                </tbody>
-                                                                                                                            </table>
-                                                                                                                        </div>
-                                                                                                                    </td>
+                                                                                                                    <tr>
+                                                                                                                        <td>@entry.Name</td>
+                                                                                                                        <td>@entry.ContactNumber</td>
+                                                                                                                        <td>@entry.Reference</td>
                                                                                                                     </tr>
                                                                                                                 }
-                                                                                                            }
-                                                                                                        </tbody>
+                                                                                                            </tbody>
+                                                                                                            <tfoot>
+                                                                                                                <a href="" style="float: left; color: #007bff;">
+                                                                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                                                                    View all Entries in @item.Taluka and @village.Village
+                                                                                                                </a>
+                                                                                                            </tfoot>
+                                                                                                        }
                                                                                                     </table>
                                                                                                 </div>
                                                                                             </td>
@@ -199,7 +207,6 @@
     private string baseUrl = "https://entrynowapi.azurewebsites.net/api/";
     private Reports reports = new Reports();
     private List<string> talukas = new List<string>();
-
     protected override async Task OnInitializedAsync()
     {
         loading = true;
@@ -225,5 +232,16 @@
             loading = false;
             StateHasChanged();
         }
+    }
+    public async void DownloadReport()
+    {
+        string url = $"{baseUrl}reference/downloadEntriesByReference/1";
+        await JSRuntime.InvokeAsync<object>("open", url, "_blank");
+    }
+    public async void GetAllEntries(string talukaVal, string ucVal)
+    {
+        string url = $"reports/index/entries/{talukaVal}/{ucVal}";
+        await JSRuntime.InvokeAsync<object>("open", url, "_blank");
+        //NavigationManager.NavigateTo($"reports/index/entries/{talukaVal}/{ucVal}");
     }
 }

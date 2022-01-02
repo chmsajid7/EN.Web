@@ -27,7 +27,7 @@
                 <!-- small box -->
                 <div class="small-box bg-info">
                     <div class="inner">
-                        @if (entriesLoading)
+                        @if (entriesLoading || referencesLoading)
                         {
                             <span class="spinner-border spinner-border-sm" style="color:white;"></span>
                         }
@@ -48,7 +48,7 @@
                 <!-- small box -->
                 <div class="small-box bg-success">
                     <div class="inner">
-                        @if (referencesLoading)
+                        @if (entriesLoading || referencesLoading)
                         {
                             <span class="spinner-border spinner-border-sm" style="color:white;"></span>
                         }
@@ -69,7 +69,14 @@
                 <!-- small box -->
                 <div class="small-box bg-warning">
                     <div class="inner">
-                        <h3>Reports</h3>
+                        @if (entriesLoading || referencesLoading)
+                        {
+                            <span class="spinner-border spinner-border-sm" style="color:white;"></span>
+                        }
+                        else
+                        {
+                            <h3>Reports</h3>
+                        }
                         <p>Generate Reports</p>
                     </div>
                     <div class="icon">
@@ -83,7 +90,14 @@
                 <!-- small box -->
                 <div class="small-box bg-danger">
                     <div class="inner">
-                        <h3>Settings</h3>
+                        @if (entriesLoading || referencesLoading)
+                        {
+                            <span class="spinner-border spinner-border-sm" style="color:white;"></span>
+                        }
+                        else
+                        {
+                            <h3>Settings</h3>
+                        }
                         <p>Change Settings</p>
                     </div>
                     <div class="icon">
