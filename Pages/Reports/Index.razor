@@ -67,6 +67,7 @@
                                                                     <td>
                                                                         <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
                                                                         Union Counsils
+                                                                        <a style="float:right; color:grey;">@item.Count Entries&nbsp;&nbsp;</a>
                                                                     </td>
                                                                 </tr>
                                                                 <tr class="expandable-body">
@@ -76,12 +77,13 @@
                                                                                 <tbody>
                                                                                     @foreach (var ucs in item.UnionCounsils)
                                                                                     {
-                                                                                        <tr data-widget="expandable-table" aria-expanded="false">
-                                                                                            <td>
-                                                                                                <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
-                                                                                                @ucs.UnionCounsilUnionCounsil
-                                                                                            </td>
-                                                                                        </tr>
+                                                                                    <tr data-widget="expandable-table" aria-expanded="false">
+                                                                                        <td>
+                                                                                            <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
+                                                                                            @ucs.UnionCounsilUnionCounsil
+                                                                                            <a style="float:right; color:grey;">@ucs.Count Entries&nbsp;&nbsp;</a>
+                                                                                        </td>
+                                                                                    </tr>
                                                                                         <tr class="expandable-body">
                                                                                             <td>
                                                                                                 <div class="p-0">
@@ -91,6 +93,7 @@
                                                                                                                 <th>Name</th>
                                                                                                                 <th>Contact</th>
                                                                                                                 <th>Reference</th>
+                                                                                                                <th></th>
                                                                                                             </tr>
                                                                                                         </thead>
                                                                                                         <tbody>
@@ -100,6 +103,15 @@
                                                                                                                     <td>@entry.Name</td>
                                                                                                                     <td>@entry.ContactNumber</td>
                                                                                                                     <td>@entry.Reference</td>
+                                                                                                                    <td>
+                                                                                                                        <a href="" @onclick:preventDefault>
+                                                                                                                            <i class="far fa-edit" style="color: #007bff;"></i>
+                                                                                                                        </a>
+                                                                                                                        &nbsp;
+                                                                                                                        <a href="" @onclick:preventDefault>
+                                                                                                                            <i class="far fa-eye" style="color: #007bff;"></i>
+                                                                                                                        </a>
+                                                                                                                    </td>
                                                                                                                 </tr>
                                                                                                             }
                                                                                                         </tbody>
@@ -127,6 +139,7 @@
                                                                     <td>
                                                                         <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
                                                                         Villages
+                                                                        <a style="float:right; color:grey;">@item.Villages.Count Entries&nbsp;&nbsp;</a>
                                                                     </td>
                                                                 </tr>
                                                                 <tr class="expandable-body">
@@ -140,6 +153,7 @@
                                                                                             <td>
                                                                                                 <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
                                                                                                 @village.Village
+                                                                                                <a style="float:right; color:grey;">@village.Count Entries&nbsp;&nbsp;</a>
                                                                                             </td>
                                                                                         </tr>
                                                                                         <tr class="expandable-body">
@@ -153,6 +167,7 @@
                                                                                                                     <th>Name</th>
                                                                                                                     <th>Contact</th>
                                                                                                                     <th>Reference</th>
+                                                                                                                    <th></th>
                                                                                                                 </tr>
                                                                                                             </thead>
                                                                                                             <tbody>
@@ -162,6 +177,15 @@
                                                                                                                         <td>@entry.Name</td>
                                                                                                                         <td>@entry.ContactNumber</td>
                                                                                                                         <td>@entry.Reference</td>
+                                                                                                                        <td>
+                                                                                                                            <a href="" @onclick:preventDefault>
+                                                                                                                                <i class="far fa-edit" style="color: #007bff;"></i>
+                                                                                                                            </a>
+                                                                                                                            &nbsp;
+                                                                                                                            <a href="" @onclick:preventDefault>
+                                                                                                                                <i class="far fa-eye" style="color: #007bff;"></i>
+                                                                                                                            </a>
+                                                                                                                        </td>
                                                                                                                     </tr>
                                                                                                                 }
                                                                                                             </tbody>
