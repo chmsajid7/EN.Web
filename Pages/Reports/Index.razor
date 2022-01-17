@@ -36,186 +36,20 @@
                     </div>
                     <!-- ./card-header -->
                     <div class="card-body p-0">
-                        <table class="table table-hover">
-                            <tbody>
-                                @if (loading)
-                                {
-                                    <tr>
-                                        <td colspan="12" class="text-center">
-                                            <span class="spinner-border spinner-border-lg align-center"></span>
-                                        </td>
-                                    </tr>
-                                }
-                                else
-                                {
-                                    foreach (var item in this.reports.ListReports)
-                                    {
-                                        <tr data-widget="expandable-table" aria-expanded="false">
-                                            <td>
-                                                <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
-                                                @item.Taluka
-                                            </td>
-                                        </tr>
-                                        <tr class="expandable-body">
-                                            <td>
-                                                <div class="p-0">
-                                                    <table class="table table-hover">
-                                                        <tbody>
-                                                            @if (item.UnionCounsils.Count > 0)
-                                                            {
-                                                                <tr data-widget="expandable-table" aria-expanded="false">
-                                                                    <td>
-                                                                        <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
-                                                                        Union Counsils
-                                                                        <a style="float:right; color:grey;">@item.Count Entries&nbsp;&nbsp;</a>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr class="expandable-body">
-                                                                    <td>
-                                                                        <div class="p-0">
-                                                                            <table class="table table-hover">
-                                                                                <tbody>
-                                                                                    @foreach (var ucs in item.UnionCounsils)
-                                                                                    {
-                                                                                    <tr data-widget="expandable-table" aria-expanded="false">
-                                                                                        <td>
-                                                                                            <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
-                                                                                            @ucs.UnionCounsilUnionCounsil
-                                                                                            <a style="float:right; color:grey;">@ucs.Count Entries&nbsp;&nbsp;</a>
-                                                                                        </td>
-                                                                                    </tr>
-                                                                                        <tr class="expandable-body">
-                                                                                            <td>
-                                                                                                <div class="p-0">
-                                                                                                    <table class="table table-hover">
-                                                                                                        <thead>
-                                                                                                            <tr>
-                                                                                                                <th>Name</th>
-                                                                                                                <th>Contact</th>
-                                                                                                                <th>Reference</th>
-                                                                                                                <th></th>
-                                                                                                            </tr>
-                                                                                                        </thead>
-                                                                                                        <tbody>
-                                                                                                            @foreach (var entry in ucs.Entries)
-                                                                                                            {
-                                                                                                                <tr>
-                                                                                                                    <td>@entry.Name</td>
-                                                                                                                    <td>@entry.ContactNumber</td>
-                                                                                                                    <td>@entry.Reference</td>
-                                                                                                                    <td>
-                                                                                                                        <a href="" @onclick:preventDefault>
-                                                                                                                            <i class="far fa-edit" style="color: #007bff;"></i>
-                                                                                                                        </a>
-                                                                                                                        &nbsp;
-                                                                                                                        <a href="" @onclick:preventDefault>
-                                                                                                                            <i class="far fa-eye" style="color: #007bff;"></i>
-                                                                                                                        </a>
-                                                                                                                    </td>
-                                                                                                                </tr>
-                                                                                                            }
-                                                                                                        </tbody>
-                                                                                                        <tfoot>
-                                                                                                            <a href="" @onclick:preventDefault @onclick="@(() => GetAllEntries(item.Taluka, ucs.UnionCounsilUnionCounsil))"
-                                                                                                               style="float: left; color: #007bff;">
-                                                                                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                                                                                View all Entries in @item.Taluka and @ucs.UnionCounsilUnionCounsil
-                                                                                                            </a>
-                                                                                                        </tfoot>
-                                                                                                    </table>
-                                                                                                </div>
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                    }
-                                                                                </tbody>
-                                                                            </table>
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                            }
-                                                            @if (item.Villages.Count > 0)
-                                                            {
-                                                                <tr data-widget="expandable-table" aria-expanded="false">
-                                                                    <td>
-                                                                        <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
-                                                                        Villages
-                                                                        <a style="float:right; color:grey;">@item.Villages.Count Entries&nbsp;&nbsp;</a>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr class="expandable-body">
-                                                                    <td>
-                                                                        <div class="p-0">
-                                                                            <table class="table table-hover">
-                                                                                <tbody>
-                                                                                    @foreach (var village in item.Villages)
-                                                                                    {
-                                                                                        <tr data-widget="expandable-table" aria-expanded="false">
-                                                                                            <td>
-                                                                                                <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
-                                                                                                @village.Village
-                                                                                                <a style="float:right; color:grey;">@village.Count Entries&nbsp;&nbsp;</a>
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                        <tr class="expandable-body">
-                                                                                            <td>
-                                                                                                <div class="p-0">
-                                                                                                    <table class="table table-hover">
-                                                                                                        @if (village.Count > 0)
-                                                                                                        {
-                                                                                                            <thead>
-                                                                                                                <tr>
-                                                                                                                    <th>Name</th>
-                                                                                                                    <th>Contact</th>
-                                                                                                                    <th>Reference</th>
-                                                                                                                    <th></th>
-                                                                                                                </tr>
-                                                                                                            </thead>
-                                                                                                            <tbody>
-                                                                                                                @foreach (var entry in village.Entries)
-                                                                                                                {
-                                                                                                                    <tr>
-                                                                                                                        <td>@entry.Name</td>
-                                                                                                                        <td>@entry.ContactNumber</td>
-                                                                                                                        <td>@entry.Reference</td>
-                                                                                                                        <td>
-                                                                                                                            <a href="" @onclick:preventDefault>
-                                                                                                                                <i class="far fa-edit" style="color: #007bff;"></i>
-                                                                                                                            </a>
-                                                                                                                            &nbsp;
-                                                                                                                            <a href="" @onclick:preventDefault>
-                                                                                                                                <i class="far fa-eye" style="color: #007bff;"></i>
-                                                                                                                            </a>
-                                                                                                                        </td>
-                                                                                                                    </tr>
-                                                                                                                }
-                                                                                                            </tbody>
-                                                                                                            <tfoot>
-                                                                                                                <a href="" style="float: left; color: #007bff;">
-                                                                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                                                                                    View all Entries in @item.Taluka and @village.Village
-                                                                                                                </a>
-                                                                                                            </tfoot>
-                                                                                                        }
-                                                                                                    </table>
-                                                                                                </div>
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                    }
-                                                                                </tbody>
-                                                                            </table>
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                            }
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    }
-                                }
-                            </tbody>
-                        </table>
+
+                        <button class="collapsible123" @onclick="Collaps">Open Section 1</button>
+                        <div class="contenttt">
+                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                        </div>
+                        <button class="collapsible123" @onclick="Collaps">Open Section 2</button>
+                        <div class="contenttt">
+                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                        </div>
+                        <button class="collapsible123" @onclick="Collaps">Open Section 3</button>
+                        <div class="contenttt">
+                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                        </div>
+
                     </div>
                     <!-- /.card-body -->
                 </div>
@@ -227,6 +61,12 @@
 </section>
 
 @code {
+
+    public async void Collaps()
+    {
+        await JSRuntime.InvokeAsync<object>("accessDOMElementToCollaps");
+    }
+
     private bool loading;
     private string baseUrl = "https://entrynowapi.azurewebsites.net/api/";
     private Reports reports = new Reports();
@@ -236,6 +76,7 @@
         loading = true;
         await GetData();
         loading = false;
+        await JSRuntime.InvokeAsync<object>("accessDOMElementToCollaps");
     }
     private async Task GetData()
     {
