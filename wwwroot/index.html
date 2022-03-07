@@ -10,6 +10,7 @@
     <link href="Admin_LTE/fonts.css" rel="stylesheet" />
     <link rel="stylesheet" href="Admin_LTE/plugins/fontawesome-free/css/all.min.css">
     <link href="AdminLTE/css/ionicons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <link rel="stylesheet" href="Admin_LTE/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
     <link rel="stylesheet" href="Admin_LTE/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
     <link rel="stylesheet" href="Admin_LTE/plugins/jqvmap/jqvmap.min.css">
@@ -25,44 +26,6 @@
             align-items: center;
             height: 500px;
         }
-    </style>
-
-    <style>
-            .collapsible123 {
-                background-color: #777;
-                color: white;
-                cursor: pointer;
-                padding: 18px;
-                width: 100%;
-                border: none;
-                text-align: left;
-                outline: none;
-                font-size: 15px;
-            }
-
-            .active, .collapsible123:hover {
-                background-color: #555;
-            }
-
-            .collapsible123:after {
-                content: '\002B';
-                color: white;
-                font-weight: bold;
-                float: right;
-                margin-left: 5px;
-            }
-
-            .active:after {
-                content: "\2212";
-            }
-
-            .contenttt {
-                padding: 0 18px;
-                max-height: 0;
-                overflow: hidden;
-                transition: max-height 0.2s ease-out;
-                background-color: #f1f1f1;
-            }
     </style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -95,33 +58,5 @@
     <script src="Admin_LTE/dist/js/adminlte.js"></script>
     <script src="Admin_LTE/dist/js/demo.js"></script>
     <script src="Admin_LTE/dist/js/pages/dashboard.js"></script>
-    
-    <script>
-        function accessDOMElementToCollaps() {
-
-            console.log(">>>abc");
-
-            var coll = document.getElementsByClassName("collapsible123");
-            var i;
-
-            for (i = 0; i < coll.length; i++) {
-                console.log(">>>abc2");
-                coll[i].addEventListener("click", function () {
-                    this.classList.toggle("active");
-                    var contenttt = this.nextElementSibling;
-
-                    console.log(">>>abc22   ", contenttt.scrollHeight);
-
-                    if (contenttt.style.maxHeight) {
-                        contenttt.style.maxHeight = null;
-                    } else {
-                        contenttt.style.maxHeight = contenttt.scrollHeight + "px";
-                    }
-                });
-            }
-        }
-
-    </script>
-
 </body>
 </html>
