@@ -1,3 +1,4 @@
+using Blazor.AdminLte;
 using EN.Web.Helpers;
 using EN.Web.Services;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -21,6 +22,8 @@ namespace EN.Web
                 .AddScoped<IAlertService, AlertService>()
                 .AddScoped<IHttpService, HttpService>()
                 .AddScoped<ILocalStorageService, LocalStorageService>();
+
+            builder.Services.AddAdminLte();
 
             // configure http client
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });

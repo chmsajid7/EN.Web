@@ -1,0 +1,201 @@
+﻿@page "/reports/ucWise/index"
+@attribute [Authorize]
+@inject PageNumberHelper PageNumberHelper
+@inject IAlertService AlertService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime;
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>UC Wise Reports</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">List of Reports</li>
+                    <li class="breadcrumb-item active">UC Wise</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <a style="float:left; color:grey;">View all UC Wise Reports!</a>
+                <EditForm Model="@listTaluka" OnValidSubmit="OnValidSubmit">
+                    <select class="form-control select2" style="width: 30%; height:65%" @bind="selectedTaluka">
+                        <option disabled selected hidden>Select Taluka ...</option>
+                        @foreach (var taluka in listTaluka)
+                        {
+                            <option value="@taluka.id">@taluka.talukaName</option>
+                        }
+                    </select>
+                    &nbsp;&nbsp;
+                    <a href="#" style="float:right; color:grey;" @onclick:preventDefault @onclick="@(()=> Search(selectedTaluka))" data-toggle="modal" data-target="#modal-default-search">
+                        <i class="fas fa-search"></i>
+                    </a>
+                    @if (isOnSearch)
+                    {
+                        <a href="#" style="float:right;" @onclick:preventDefault @onclick="@(() => ClearSearch())">
+                            &nbsp;Clear Search
+                        </a>
+                    }
+                </EditForm>
+                @if (!loading && filteredReports != null)
+                {
+                    <a href="#" style="float:right; color:grey;"><i class="fas fa-download"></i></a>
+                    <a style="float:right; color:grey;">Click to download&nbsp;&nbsp;</a>
+                }
+            </div>
+            <div class="card-body table-responsive p-0">
+                <table class="table text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>Taluka Name</th>
+                            <th>Union Council</th>
+                            <th>Total Entries</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (loading)
+                        {
+                            <tr>
+                                <td colspan="12" class="text-center">
+                                    <span class="spinner-border spinner-border-lg align-center"></span>
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @if (filteredReports != null)
+                            {
+                                foreach (var item in filteredReports.uCs)
+                                {
+                                    <tr>
+                                        <td>@item.talukaName</td>
+                                        <td>@item.uc</td>
+                                        <td>@item.totalPersons</td>
+                                        <td style="white-space: nowrap"></td>
+                                    </tr>
+                                }
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer clearfix"></div>
+        </div>
+    </div>
+</section>
+
+@code {
+    private bool isOnSearch;
+    private bool loading;
+    private string selectedTaluka;
+    private List<AllTaluka> listTaluka;
+    private UCFilteredReports filteredReports;
+    private string baseUrl = "https://entrynowapi.azurewebsites.net/api/";
+
+    protected override async Task OnInitializedAsync()
+    {
+        loading = true;
+        await GetTalukas();
+        await GetUCsData();
+        loading = false;
+    }
+
+    private async Task GetTalukas()
+    {
+        try
+        {
+            using (System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient())
+            {
+                using (System.Net.Http.HttpResponseMessage response = await httpClient.GetAsync(baseUrl + "taluka/get?pageNumber=1&perPage=10"))
+                {
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    listTaluka = Newtonsoft.Json.JsonConvert.DeserializeObject<List<AllTaluka>>(apiResponse);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            AlertService.Clear();
+            AlertService.Error(e.Message);
+            loading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task GetUCsData()
+    {
+        try
+        {
+            using (System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient())
+            {
+                using (System.Net.Http.HttpResponseMessage response = await httpClient.GetAsync(baseUrl + "reports/uc"))
+                {
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    filteredReports = Newtonsoft.Json.JsonConvert.DeserializeObject<UCFilteredReports>(apiResponse);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            AlertService.Clear();
+            AlertService.Error(e.Message);
+            loading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async void OnValidSubmit()
+    {
+        loading = true;
+        loading = false;
+    }
+
+    private async Task ClearSearch()
+    {
+        loading = true;
+        await GetTalukas();
+        await GetUCsData();
+        loading = false;
+        StateHasChanged();
+    }
+
+    private async Task Search(string selectedTaluka)
+    {
+        loading = true;
+        try
+        {
+            using (System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient())
+            {
+                using (System.Net.Http.HttpResponseMessage response = await httpClient.GetAsync(baseUrl + $"reports/uc?talukaId={selectedTaluka}"))
+                {
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    filteredReports = Newtonsoft.Json.JsonConvert.DeserializeObject<UCFilteredReports>(apiResponse);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            AlertService.Clear();
+            AlertService.Error(e.Message);
+            loading = false;
+            StateHasChanged();
+        }
+        finally
+        {
+            AlertService.Clear();
+            loading = false;
+            StateHasChanged();
+        }
+    }
+}
