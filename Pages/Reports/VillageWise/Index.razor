@@ -1,4 +1,4 @@
-﻿@page "/reports/ucWise/index"
+﻿@page "/reports/villageWise/index"
 @attribute [Authorize]
 @inject PageNumberHelper PageNumberHelper
 @inject IAlertService AlertService
@@ -59,6 +59,7 @@
                         <tr>
                             <th>Taluka Name</th>
                             <th>Union Council</th>
+                            <th>Village</th>
                             <th>Total Entries</th>
                         </tr>
                     </thead>
@@ -75,12 +76,13 @@
                         {
                             @if (filteredReports != null)
                             {
-                                foreach (var item in filteredReports.uCs)
+                                foreach (var item in filteredReports.villages)
                                 {
                                     <tr>
-                                        <td>@item.talukaName</td>
+                                        <td>@item.taluka</td>
                                         <td>@item.uc</td>
-                                        <td>@item.totalPersons</td>
+                                        <td>@item.village</td>
+                                        <td>@item.totalPerson</td>
                                     </tr>
                                 }
                             }
@@ -98,7 +100,7 @@
     private bool loading;
     private string selectedTaluka;
     private List<AllTaluka> listTaluka;
-    private UCFilteredReports filteredReports;
+    private VillageFilteredReports filteredReports;
     private string baseUrl = "https://entrynowapi.azurewebsites.net/api/";
 
     protected override async Task OnInitializedAsync()
@@ -137,10 +139,10 @@
         {
             using (System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient())
             {
-                using (System.Net.Http.HttpResponseMessage response = await httpClient.GetAsync(baseUrl + "reports/uc"))
+                using (System.Net.Http.HttpResponseMessage response = await httpClient.GetAsync(baseUrl + "reports/village"))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
-                    filteredReports = Newtonsoft.Json.JsonConvert.DeserializeObject<UCFilteredReports>(apiResponse);
+                    filteredReports = Newtonsoft.Json.JsonConvert.DeserializeObject<VillageFilteredReports>(apiResponse);
                 }
             }
         }
@@ -179,11 +181,10 @@
         {
             using (System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient())
             {
-                var url = $"{baseUrl}reports/uc?talukaId={selectedTaluka}";
-                using (System.Net.Http.HttpResponseMessage response = await httpClient.GetAsync(url))
+                using (System.Net.Http.HttpResponseMessage response = await httpClient.GetAsync(baseUrl + $"reports/village?talukaId={selectedTaluka}"))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
-                    filteredReports = Newtonsoft.Json.JsonConvert.DeserializeObject<UCFilteredReports>(apiResponse);
+                    filteredReports = Newtonsoft.Json.JsonConvert.DeserializeObject<VillageFilteredReports>(apiResponse);
                 }
             }
         }
@@ -196,6 +197,7 @@
         }
         finally
         {
+            AlertService.Clear();
             loading = false;
             StateHasChanged();
         }

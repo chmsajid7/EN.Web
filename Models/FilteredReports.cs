@@ -2,6 +2,19 @@
 
 namespace EN.Web.Models
 {
+    //Villae Wise Reports
+    public class Village
+    {
+        public string taluka { get; set; }
+        public string uc { get; set; }
+        public string village { get; set; }
+        public int totalPerson { get; set; }
+    }
+    public class VillageFilteredReports
+    {
+        public List<Village> villages { get; set; }
+    }
+
     //List all talukas
     public class AllTaluka
     {
@@ -9,8 +22,6 @@ namespace EN.Web.Models
         public string talukaName { get; set; }
         public object districtName { get; set; }
     }
-
-
 
     //UC Wise Reports
     public class UC

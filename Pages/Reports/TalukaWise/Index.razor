@@ -28,11 +28,11 @@
         <div class="container-fluid">
             <div class="card">
                 <div class="card-header">
-                    <a style="float:left; color:grey;">View all Taluka Wise Reports!</a>
                     @if (!loading && filteredReports != null)
                     {
-                        <a href="#" style="float:right; color:grey;"><i class="fas fa-download"></i></a>
-                        <a style="float:right; color:grey;">Click to download&nbsp;&nbsp;</a>
+                        <NavLink href="#">
+                            <h3 class="card-title">&nbsp;&nbsp;&nbsp;<i class="fas fa-download"></i>&nbsp;Click here to download</h3>
+                        </NavLink>
                     }
                 </div>
                 <div class="card-body table-responsive p-0">
