@@ -30,9 +30,9 @@
                 <div class="card-header">
                     @if (!loading && filteredReports != null)
                     {
-                        <NavLink href="#">
+                        <a href="" @onclick="@(() => DownloadCsv())" @onclick:preventDefault style="color:#007bff;">
                             <h3 class="card-title">&nbsp;&nbsp;&nbsp;<i class="fas fa-download"></i>&nbsp;Click here to download</h3>
-                        </NavLink>
+                        </a>
                     }
                 </div>
                 <div class="card-body table-responsive p-0">
@@ -109,5 +109,11 @@
             loading = false;
             StateHasChanged();
         }
+    }
+
+    public async void DownloadCsv()
+    {
+        string url = "https://entrynowapi.azurewebsites.net/api/reports/taluka/download";
+        await JSRuntime.InvokeAsync<object>("open", url, "_blank"); 
     }
 }

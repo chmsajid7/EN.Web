@@ -5,7 +5,6 @@
 @inject PageNumberHelper PageNumberHelper
 @using Microsoft.JSInterop
 @using System.IO
-@*@using BlazorDownloadFile*@
 @inject IJSRuntime JSRuntime;
 
     <!-- Content Header (Page header) -->
@@ -46,7 +45,9 @@
                   @*</NavLink>*@
                     @if (totalReferences != 0)
                     {
-                        <a href="#" style="float:right; color:grey;"><i class="fas fa-download"></i></a>
+                        <a href="" @onclick="@(() => DownloadReferencesCsv())" @onclick:preventDefault style="float:right; color:grey;">
+                            <i class="fas fa-download"></i>
+                        </a>
                         <a style="float:right; color:grey;">Total @totalReferences References Found&nbsp;&nbsp;</a>
                     }
               </div>
@@ -107,7 +108,9 @@
                                           </a>
                                       </td>
                                       <td>
-                                          <a href="" @onclick="@(() => DownloadEntries(@entrie.Id))" @onclick:preventDefault style="float:right; color:grey;"><i class="fas fa-download"></i></a>
+                                          <a href="" @onclick="@(() => DownloadEntries(@entrie.Id))" @onclick:preventDefault style="float:right; color:grey;">
+                                              <i class="fas fa-download"></i>
+                                          </a>
                                       </td>
                                   </tr>
                               }
@@ -875,6 +878,12 @@
     public async void DownloadEntries(int id)
     {
         string url = "https://entrynowapi.azurewebsites.net/api/reference/downloadEntriesByReference/" + id;
+        await JSRuntime.InvokeAsync<object>("open", url, "_blank"); 
+    }
+
+    public async void DownloadReferencesCsv()
+    {
+        string url = "https://entrynowapi.azurewebsites.net/api/reference/download";
         await JSRuntime.InvokeAsync<object>("open", url, "_blank"); 
     }
 }
