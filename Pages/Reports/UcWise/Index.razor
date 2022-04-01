@@ -40,11 +40,19 @@
                             &nbsp;&nbsp;&nbsp;&nbsp;Clear Search
                         </a>
                     }
-                    <a href="#" style="float:right; color:grey; margin-top:0.5%" @onclick:preventDefault @onclick="@(()=> Search(selectedTaluka))" data-toggle="modal" data-target="#modal-default-search">
+                    <a href="#" style="float:right; color:grey; margin-top:0.5%" @onclick:preventDefault @onclick="@(()=> Search(selectedTaluka, selectedUc))" data-toggle="modal" data-target="#modal-default-search">
                         &nbsp;&nbsp;&nbsp;
                         <i class="fas fa-search"></i>
                     </a>
-                    <select class="form-control select2" style="float:right; width: 30%; height:65%" @bind="selectedTaluka">
+                    <select class="form-control select2" style="float:right; width: 20%; height:65%" @bind="selectedUc">
+                        <option disabled selected hidden>Select Union Council ...</option>
+                        @foreach (var uc in listUCs)
+                        {
+                            // just for demo
+                            <option value="@uc.id">@uc.talukaName</option>
+                        }
+                    </select>
+                    <select class="form-control select1" style="float:right; width: 20%; height:65%; margin-right:1%" @bind="selectedTaluka">
                         <option disabled selected hidden>Select Taluka ...</option>
                         @foreach (var taluka in listTaluka)
                         {
@@ -96,15 +104,21 @@
 @code {
     private bool isOnSearch;
     private bool loading;
+    private int selectedTalukaId;
     private string selectedTaluka;
+    private string selectedUc;
     private List<AllTaluka> listTaluka;
+    private List<AllUCs> listUCs;
     private UCFilteredReports filteredReports;
     private string baseUrl = "https://entrynowapi.azurewebsites.net/api/";
 
     protected override async Task OnInitializedAsync()
     {
+        selectedTalukaId = 0;
+
         loading = true;
         await GetTalukas();
+        await GetUCs();
         await GetUCsData();
         loading = false;
     }
@@ -119,6 +133,28 @@
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
                     listTaluka = Newtonsoft.Json.JsonConvert.DeserializeObject<List<AllTaluka>>(apiResponse);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            AlertService.Clear();
+            AlertService.Error(e.Message);
+            loading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task GetUCs()
+    {
+        try
+        {
+            using (System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient())
+            {
+                using (System.Net.Http.HttpResponseMessage response = await httpClient.GetAsync(baseUrl + "taluka/get?pageNumber=1&perPage=10"))
+                {
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    listUCs = Newtonsoft.Json.JsonConvert.DeserializeObject<List<AllUCs>>(apiResponse);
                 }
             }
         }
@@ -161,6 +197,10 @@
 
     private async Task ClearSearch()
     {
+        selectedTaluka = "Select Taluka ...";
+        selectedUc = "Select Union Council ...";
+        selectedTalukaId = 0;
+
         loading = true;
         isOnSearch = false;
         await GetTalukas();
@@ -169,17 +209,18 @@
         StateHasChanged();
     }
 
-    private async Task Search(string selectedTaluka)
+    private async Task Search(string selectedTaluka, string selectedUc)
     {
-        if (string.IsNullOrEmpty(selectedTaluka)) return;
+        if (string.IsNullOrEmpty(selectedTaluka) || selectedTaluka == "Select Taluka ...") return;
 
+        selectedTalukaId = Int16.Parse(selectedTaluka);
         loading = true;
         isOnSearch = true;
         try
         {
             using (System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient())
             {
-                var url = $"{baseUrl}reports/uc?talukaId={selectedTaluka}";
+                var url = $"{baseUrl}reports/uc?talukaId={selectedTalukaId}";
                 using (System.Net.Http.HttpResponseMessage response = await httpClient.GetAsync(url))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
@@ -189,6 +230,7 @@
         }
         catch (Exception e)
         {
+            selectedTalukaId = 0;
             AlertService.Clear();
             AlertService.Error(e.Message);
             loading = false;
@@ -203,7 +245,22 @@
 
     public async void DownloadCsv()
     {
-        string url = "https://entrynowapi.azurewebsites.net/api/reports/uc/download";
-        await JSRuntime.InvokeAsync<object>("open", url, "_blank"); 
+        string url = string.Empty;
+        if (selectedTalukaId != 0)
+        {
+            url = $"https://entrynowapi.azurewebsites.net/api/reports/uc/download?talukaId={selectedTalukaId}";
+        }
+        else
+        {
+            url = "https://entrynowapi.azurewebsites.net/api/reports/uc/download";
+        }
+
+        try
+        {
+            await JSRuntime.InvokeAsync<object>("open", url, "_blank");
+        }
+        catch
+        {
+        }
     }
 }

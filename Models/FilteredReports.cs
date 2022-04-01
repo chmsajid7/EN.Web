@@ -23,6 +23,22 @@ namespace EN.Web.Models
         public object districtName { get; set; }
     }
 
+    //List all UCs
+    public class AllUCs
+    {
+        public int id { get; set; }
+        public string talukaName { get; set; }
+        public object districtName { get; set; }
+    }
+
+    //List all AllVillages
+    public class AllVillages
+    {
+        public int id { get; set; }
+        public string talukaName { get; set; }
+        public object districtName { get; set; }
+    }
+
     //UC Wise Reports
     public class UC
     {
