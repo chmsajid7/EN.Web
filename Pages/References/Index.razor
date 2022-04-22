@@ -884,6 +884,36 @@
     public async void DownloadReferencesCsv()
     {
         string url = "https://entrynowapi.azurewebsites.net/api/reference/download";
+
+        if (isOnSearch)
+        {
+            url += "?";
+
+            if (!string.IsNullOrWhiteSpace(this.NameValue))
+                url += "name=" + this.NameValue + "&";
+
+            if (!string.IsNullOrWhiteSpace(this.ContactNumberValue))
+                url += "contactNumber=" + this.ContactNumberValue + "&";
+
+            if (model.SurnameId != null && model.SurnameId > 0)
+                url += "surnameId=" + model.SurnameId + "&";
+
+            if (model.VillageId != null && model.VillageId > 0)
+                url += "villageId=" + model.VillageId + "&";
+
+            if (model.TalukaId != null && model.TalukaId > 0)
+                url += "TalukaId=" + model.TalukaId + "&";
+
+            if (model.CityId != null && model.CityId > 0)
+                url += "CityId=" + model.CityId + "&";
+
+            if (model.UnionCounsilId != null && model.UnionCounsilId > 0)
+                url += "unionCounsilId=" + model.UnionCounsilId + "&";
+
+            if (!string.IsNullOrWhiteSpace(this.AddressValue))
+                url += "Address=" + this.AddressValue;
+        }
+
         await JSRuntime.InvokeAsync<object>("open", url, "_blank"); 
     }
 }
